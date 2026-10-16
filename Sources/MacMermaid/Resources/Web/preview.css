@@ -1,0 +1,12 @@
+:root { color-scheme: light; --canvas: #f7f9fa; --dot: #cdd6d8; }
+:root.dark { color-scheme: dark; --canvas: #172024; --dot: #344348; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+body { background: var(--canvas); font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+#viewport { width: 100%; height: 100%; overflow: hidden; touch-action: none; cursor: grab; }
+#viewport.grid { background-image: radial-gradient(var(--dot) 0.8px, transparent 0.8px); background-size: 22px 22px; }
+#viewport.dragging { cursor: grabbing; }
+#stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#stage svg { display: block; overflow: visible; max-width: none !important; }
+#scratch { position: absolute; left: -100000px; top: 0; visibility: hidden; }
+@media (prefers-reduced-motion: no-preference) { #stage { transition: opacity 120ms ease; } }
