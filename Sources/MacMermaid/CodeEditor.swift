@@ -24,7 +24,6 @@ struct CodeEditor: NSViewRepresentable {
     var fontSize: Double
     var wraps: Bool
     var dark: Bool
-    var palette: CatppuccinPalette? = nil
     var selectionChanged: (Int, Int) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -73,7 +72,7 @@ struct CodeEditor: NSViewRepresentable {
     func updateNSView(_ scroll: NSScrollView, context: Context) {
         context.coordinator.parent = self
         guard let editor = scroll.documentView as? SourceTextView else { return }
-        let configurationChanged = editor.font?.pointSize != CGFloat(fontSize) || context.coordinator.dark != dark || context.coordinator.palette != palette
+        let configurationChanged = editor.font?.pointSize != CGFloat(fontSize) || context.coordinator.dark != dark
         if editor.string != text {
             let range = editor.selectedRange()
             editor.string = text
@@ -87,11 +86,11 @@ struct CodeEditor: NSViewRepresentable {
 
     private func configure(_ editor: SourceTextView, scroll: NSScrollView) {
         editor.font = .monospacedSystemFont(ofSize: fontSize, weight: .regular)
-        editor.backgroundColor = palette?.color("base") ?? (dark ? NSColor(calibratedRed: 0.105, green: 0.135, blue: 0.15, alpha: 1) : NSColor(calibratedRed: 0.985, green: 0.987, blue: 0.985, alpha: 1))
-        editor.insertionPointColor = palette?.color("rosewater") ?? .controlAccentColor
-        editor.selectedTextAttributes = [.backgroundColor: palette?.color("surface1") ?? .selectedTextBackgroundColor,
-                                         .foregroundColor: palette?.color("text") ?? .selectedTextColor]
-        (scroll.verticalRulerView as? LineNumberRuler)?.textColor = palette?.color("subtext0") ?? .tertiaryLabelColor
+        editor.backgroundColor = dark ? NSColor(calibratedRed: 0.105, green: 0.135, blue: 0.15, alpha: 1) : NSColor(calibratedRed: 0.985, green: 0.987, blue: 0.985, alpha: 1)
+        editor.insertionPointColor = .controlAccentColor
+        editor.selectedTextAttributes = [.backgroundColor: NSColor.selectedTextBackgroundColor,
+                                         .foregroundColor: NSColor.selectedTextColor]
+        (scroll.verticalRulerView as? LineNumberRuler)?.textColor = .tertiaryLabelColor
         editor.isHorizontallyResizable = !wraps
         editor.textContainer?.widthTracksTextView = wraps
         editor.textContainer?.containerSize = NSSize(width: wraps ? max(100, scroll.contentSize.width - 24) : CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
@@ -104,7 +103,6 @@ struct CodeEditor: NSViewRepresentable {
         var parent: CodeEditor
         weak var editor: SourceTextView?
         var dark = false
-        var palette: CatppuccinPalette?
         init(_ parent: CodeEditor) { self.parent = parent }
 
         func textDidChange(_ notification: Notification) {
@@ -127,7 +125,6 @@ struct CodeEditor: NSViewRepresentable {
         func highlight() {
             guard let editor, let storage = editor.textStorage else { return }
             dark = parent.dark
-            palette = parent.palette
             let range = NSRange(location: 0, length: storage.length)
             let paragraph = NSMutableParagraphStyle()
             paragraph.lineSpacing = 5
@@ -135,7 +132,7 @@ struct CodeEditor: NSViewRepresentable {
             paragraph.defaultTabInterval = parent.fontSize * 2.4
             let base: [NSAttributedString.Key: Any] = [
                 .font: NSFont.monospacedSystemFont(ofSize: parent.fontSize, weight: .regular),
-                .foregroundColor: palette?.color("text") ?? (dark ? NSColor(calibratedWhite: 0.84, alpha: 1) : NSColor(calibratedRed: 0.25, green: 0.31, blue: 0.34, alpha: 1)),
+                .foregroundColor: (dark ? NSColor(calibratedWhite: 0.84, alpha: 1) : NSColor(calibratedRed: 0.25, green: 0.31, blue: 0.34, alpha: 1)),
                 .paragraphStyle: paragraph
             ]
             storage.beginEditing()
@@ -149,7 +146,7 @@ struct CodeEditor: NSViewRepresentable {
                 case .arrow: color = dark ? .systemPurple : NSColor(calibratedRed: 0.52, green: 0.39, blue: 0.68, alpha: 1)
                 case .number: color = .systemOrange
                 }
-                storage.addAttribute(.foregroundColor, value: palette?.syntaxColor(token.kind) ?? color, range: token.range)
+                storage.addAttribute(.foregroundColor, value: color, range: token.range)
             }
             storage.endEditing()
             editor.typingAttributes = base

@@ -41,8 +41,8 @@ enum SmokeTest {
                 guard session.error == nil else { throw Failure("Theme \(theme.title): \(session.error!)") }
                 results.append("PASS: theme \(theme.title)")
             }
-            for palette in CatppuccinPalette.allCases {
-                // Exercise every diagram type with both new palettes, not only flowcharts.
+            for palette in DiagramPalette.allCases {
+                // Exercise every diagram type with all fixed palettes, not only flowcharts.
                 for template in DiagramTemplate.all {
                     session.update(source: template.source, options: RenderOptions(theme: palette.rawValue), immediately: true)
                     try await wait { !session.isRendering }
@@ -111,7 +111,7 @@ enum SmokeTest {
             results.append("PASS: empty source clears preview")
             try await checkNativeDocument(in: folder)
             results.append("PASS: native document open, edit, autosave, undo, and save")
-            results.append("PASS: live native editor/canvas appearance changes, manual overrides, persisted legacy choice, and layout snapshots")
+            results.append("PASS: independent editor/diagram themes, Settings appearance overrides, migration, saved choices, and layout snapshots")
             results.append("SUCCESS")
         } catch {
             results.append("FAIL: \(error)")
@@ -124,6 +124,10 @@ enum SmokeTest {
         // DocumentGroup may present its startup picker while the renderer tests run.
         // Dismiss only this test instance's picker before exercising window controls.
         for panel in NSApp.windows.compactMap({ $0 as? NSOpenPanel }) { panel.cancel(nil) }
+        let defaults = UserDefaults.standard
+        let savedTheme = defaults.object(forKey: "diagramTheme")
+        defer { defaults.set(savedTheme, forKey: "diagramTheme") }
+        defaults.set("system", forKey: "diagramTheme")
         let original = DiagramTemplate.welcome.source
         let url = folder.appendingPathComponent("document.mmd")
         try original.write(to: url, atomically: true, encoding: .utf8)
@@ -142,6 +146,7 @@ enum SmokeTest {
         }
         try await wait("native document editor") { findEditor(content) != nil }
         guard let editor = findEditor(content), editor.string == original else { throw Failure("Native open changed the source") }
+        try await wait("removed Automatic preference migration") { defaults.string(forKey: "diagramTheme") == "studio" }
         editor.window?.makeFirstResponder(editor)
         editor.setSelectedRange(NSRange(location: (original as NSString).length, length: 0))
         let addition = "\n%% Autosave round trip · สวัสดี 🌿\n"
@@ -193,42 +198,44 @@ enum SmokeTest {
         NSApp.activate()
         window.makeKeyAndOrderFront(nil)
 
-        func check(_ palette: CatppuccinPalette) async throws {
-            do {
-                try await wait("editor palette \(palette.rawValue)") { matches(editor.backgroundColor, palette.color("base")) }
-            } catch {
-                throw Failure("\(error): actual \(editor.backgroundColor), effective \(window.effectiveAppearance.name), preference \(defaults.string(forKey: "diagramTheme") ?? "unset")")
+        func checkEditor(dark: Bool) async throws {
+            let background = dark ? NSColor(calibratedRed: 0.105, green: 0.135, blue: 0.15, alpha: 1)
+                                  : NSColor(calibratedRed: 0.985, green: 0.987, blue: 0.985, alpha: 1)
+            try await wait("standard editor \(dark ? "dark" : "light") appearance") { matches(editor.backgroundColor, background) }
+            guard let storage = editor.textStorage else { throw Failure("No editor storage") }
+            for token in MermaidSyntax.tokens(in: editor.string) where token.kind == .keyword || token.kind == .arrow {
+                let expected: NSColor = token.kind == .keyword
+                    ? (dark ? .systemTeal : NSColor(calibratedRed: 0.12, green: 0.43, blue: 0.43, alpha: 1))
+                    : (dark ? .systemPurple : NSColor(calibratedRed: 0.52, green: 0.39, blue: 0.68, alpha: 1))
+                guard let actual = storage.attribute(.foregroundColor, at: token.range.location, effectiveRange: nil) as? NSColor,
+                      matches(actual, expected) else { throw Failure("Diagram theme changed standard editor syntax colors") }
             }
+        }
+
+        func checkCanvas(_ palette: DiagramPalette) async throws {
             let deadline = Date().addingTimeInterval(30)
             while true {
                 let value = try await web.evaluateJavaScript("document.documentElement.style.getPropertyValue('--canvas') + '|' + (document.querySelector('#stage svg')?.textContent || '')") as? String ?? ""
                 if value.hasPrefix(palette.colors["base"]! + "|"), value.contains(palette.colors["mauve"]!) { break }
-                guard Date() < deadline else { throw Failure("Editor/canvas theme mismatch for \(palette.rawValue)") }
+                guard Date() < deadline else { throw Failure("Canvas palette did not update for \(palette.rawValue)") }
                 try await Task.sleep(for: .milliseconds(80))
-            }
-            guard let storage = editor.textStorage else { throw Failure("No editor storage") }
-            for token in MermaidSyntax.tokens(in: editor.string) where token.kind == .keyword || token.kind == .arrow {
-                guard let color = storage.attribute(.foregroundColor, at: token.range.location, effectiveRange: nil) as? NSColor,
-                      matches(color, palette.syntaxColor(token.kind)) else { throw Failure("Syntax palette did not update") }
             }
         }
 
-        // The same effective-appearance changes delivered by macOS, without changing system settings.
+        // System follows effective macOS appearance; explicit Settings overrides win.
+        // Change only this test app's appearance, never the user's macOS settings.
         NSApp.appearance = NSAppearance(named: .aqua)
-        try await check(.latte)
+        try await checkEditor(dark: false)
         NSApp.appearance = NSAppearance(named: .darkAqua)
-        try await check(.mocha)
-        defaults.set("latte", forKey: "diagramTheme")
-        try await check(.latte)
+        try await checkEditor(dark: true)
+        defaults.set("light", forKey: "appearance")
+        try await checkEditor(dark: false)
         NSApp.appearance = NSAppearance(named: .aqua)
-        try await check(.latte)
-        defaults.set("mocha", forKey: "diagramTheme")
-        try await check(.mocha)
-        NSApp.appearance = NSAppearance(named: .darkAqua)
-        try await check(.mocha)
+        defaults.set("dark", forKey: "appearance")
+        try await checkEditor(dark: true)
+        window.setContentSize(NSSize(width: 1260, height: 820))
 
-        defaults.set("system", forKey: "diagramTheme")
-        // SwiftUI's virtual children and toolbar viewers expose the AppKit attribute API.
+        // Native toolbar viewers expose the AppKit attribute API.
         func accessible(_ object: Any, label: String) -> NSObject? {
             guard let element = object as? NSObject else { return nil }
             let description = element.accessibilityAttributeValue(.description) as? String
@@ -237,9 +244,9 @@ enum SmokeTest {
             return ((element.accessibilityAttributeValue(.children) as? [Any]) ?? []).lazy.compactMap { accessible($0, label: label) }.first
         }
         func describe(_ object: Any, depth: Int = 0) -> [String] {
-            guard depth < 15, let element = object as? any NSAccessibilityProtocol else { return [] }
-            let entry = "\(String(repeating: " ", count: depth))\(type(of: element)) role=\(element.accessibilityRole()?.rawValue ?? "nil") label=\(element.accessibilityLabel() ?? "nil") title=\(element.accessibilityTitle() ?? "nil")"
-            return [entry] + (element.accessibilityChildren() ?? []).flatMap { describe($0, depth: depth + 1) }
+            guard depth < 15, let element = object as? NSObject else { return [] }
+            let entry = "\(String(repeating: " ", count: depth))\(type(of: element)) role=\(element.accessibilityAttributeValue(.role) ?? "nil") label=\(element.accessibilityAttributeValue(.description) ?? "nil") title=\(element.accessibilityAttributeValue(.title) ?? "nil") value=\(element.accessibilityAttributeValue(.value) ?? "nil")"
+            return [entry] + ((element.accessibilityAttributeValue(.children) as? [Any]) ?? []).flatMap { describe($0, depth: depth + 1) }
         }
         try describe(window).joined(separator: "\n").write(to: folder.appendingPathComponent("workspace-accessibility.txt"), atomically: true, encoding: .utf8)
         try await wait("appearance toolbar button") { accessible(window, label: "Appearance") != nil }
@@ -250,20 +257,37 @@ enum SmokeTest {
             return view.subviews.lazy.compactMap { inspectorScrollView($0) }.first
         }
         try await wait("visible theme inspector") { inspectorScrollView(content) != nil }
-        for palette in CatppuccinPalette.allCases {
-            NSApp.appearance = NSAppearance(named: palette.isDark ? .darkAqua : .aqua)
-            try await check(palette)
-            for (label, size) in [("normal", NSSize(width: 1260, height: 820)), ("minimum", NSSize(width: 960, height: 540))] {
-                window.setContentSize(size)
-                try await Task.sleep(for: .milliseconds(300))
-                content.layoutSubtreeIfNeeded()
-                _ = try await web.takeSnapshot(configuration: nil)
-                guard let frame = content.superview, let bitmap = frame.bitmapImageRepForCachingDisplay(in: frame.bounds) else {
-                    throw Failure("Cannot snapshot native workspace")
+        try await Task.sleep(for: .milliseconds(400))
+        try describe(window).joined(separator: "\n").write(to: folder.appendingPathComponent("inspector-accessibility.txt"), atomically: true, encoding: .utf8)
+        if let frame = content.superview, let bitmap = frame.bitmapImageRepForCachingDisplay(in: frame.bounds) {
+            frame.cacheDisplay(in: frame.bounds, to: bitmap)
+            try bitmap.representation(using: .png, properties: [:])?.write(to: folder.appendingPathComponent("inspector.png"))
+        }
+        // SwiftUI theme cards are virtual accessibility nodes and are not exposed
+        // by this in-process AppKit tree. Exercise their persisted AppStorage input;
+        // use the saved workspace images to inspect the grid and labels.
+        for dark in [false, true] {
+            defaults.set(dark ? "dark" : "light", forKey: "appearance")
+            // Deliberately oppose Settings to the simulated system appearance.
+            NSApp.appearance = NSAppearance(named: dark ? .aqua : .darkAqua)
+            try await checkEditor(dark: dark)
+            for palette in DiagramPalette.allCases {
+                defaults.set(palette.rawValue, forKey: "diagramTheme")
+                try await checkCanvas(palette)
+                try await checkEditor(dark: dark)
+                for (label, size) in [("normal", NSSize(width: 1260, height: 820)), ("minimum", NSSize(width: 960, height: 540))] {
+                    window.setContentSize(size)
+                    try await Task.sleep(for: .milliseconds(300))
+                    content.layoutSubtreeIfNeeded()
+                    _ = try await web.takeSnapshot(configuration: nil)
+                    guard let frame = content.superview, let bitmap = frame.bitmapImageRepForCachingDisplay(in: frame.bounds) else {
+                        throw Failure("Cannot snapshot native workspace")
+                    }
+                    frame.cacheDisplay(in: frame.bounds, to: bitmap)
+                    guard let png = bitmap.representation(using: .png, properties: [:]) else { throw Failure("Cannot encode workspace snapshot") }
+                    try png.write(to: folder.appendingPathComponent("workspace-\(dark ? "dark" : "light")-\(palette.rawValue)-\(label).png"))
                 }
-                frame.cacheDisplay(in: frame.bounds, to: bitmap)
-                guard let png = bitmap.representation(using: .png, properties: [:]) else { throw Failure("Cannot encode workspace snapshot") }
-                try png.write(to: folder.appendingPathComponent("workspace-\(palette.rawValue)-\(label).png"))
+                window.setContentSize(NSSize(width: 1260, height: 820))
             }
         }
         defaults.set("ocean", forKey: "diagramTheme")
