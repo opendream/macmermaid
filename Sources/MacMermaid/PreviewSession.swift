@@ -4,13 +4,15 @@ import WebKit
 import UniformTypeIdentifiers
 
 enum DiagramTheme: String, CaseIterable, Identifiable {
-    case system, latte, mocha, studio, ocean, auto, forest, neutral, dark
+    case studio, ocean, auto, forest, neutral, dark, latte, mocha
+    case tokyoDay = "tokyo-day", tokyoNight = "tokyo-night"
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .system: "Automatic"
         case .latte: "Latte"
         case .mocha: "Mocha"
+        case .tokyoDay: "Tokyo Day"
+        case .tokyoNight: "Tokyo Night"
         case .studio: "Studio"
         case .ocean: "Ocean"
         case .auto: "Mermaid"
@@ -21,9 +23,10 @@ enum DiagramTheme: String, CaseIterable, Identifiable {
     }
     var colors: [Color] {
         switch self {
-        case .system: CatppuccinPalette.latte.swatches
-        case .latte: CatppuccinPalette.latte.swatches
-        case .mocha: CatppuccinPalette.mocha.swatches
+        case .latte: DiagramPalette.latte.swatches
+        case .mocha: DiagramPalette.mocha.swatches
+        case .tokyoDay: DiagramPalette.tokyoDay.swatches
+        case .tokyoNight: DiagramPalette.tokyoNight.swatches
         case .studio: [.init(red: 0.55, green: 0.78, blue: 0.69), .init(red: 0.81, green: 0.91, blue: 0.86), .white]
         case .ocean: [.blue.opacity(0.7), .cyan.opacity(0.4), .white]
         case .auto: [.purple.opacity(0.6), .purple.opacity(0.2), .white]
@@ -35,14 +38,18 @@ enum DiagramTheme: String, CaseIterable, Identifiable {
 
     // Keep the original raw values, including "auto" (Mermaid), for existing preferences.
     static func preference(_ value: String?) -> DiagramTheme {
-        value.flatMap(Self.init(rawValue:)) ?? .system
+        value.flatMap(Self.init(rawValue:)) ?? .studio
     }
 
-    func resolved(dark: Bool) -> DiagramTheme {
-        self == .system ? (dark ? .mocha : .latte) : self
+    static func migratePreference(in defaults: UserDefaults) {
+        // The removed Automatic option used "system". Preserve every explicit choice,
+        // especially the older "auto" value, which still means Mermaid.
+        if defaults.string(forKey: "diagramTheme") == "system" {
+            defaults.set(Self.studio.rawValue, forKey: "diagramTheme")
+        }
     }
 
-    var palette: CatppuccinPalette? { CatppuccinPalette(rawValue: rawValue) }
+    var palette: DiagramPalette? { DiagramPalette(rawValue: rawValue) }
 }
 
 enum ExportFormat: String, CaseIterable, Identifiable {
@@ -53,12 +60,12 @@ enum ExportFormat: String, CaseIterable, Identifiable {
 }
 
 struct RenderOptions: Equatable {
-    var theme: String = "system"
+    var theme: String = "studio"
     var dark = false
     var grid = true
     var curve = "basis"
-    var resolvedTheme: DiagramTheme { DiagramTheme.preference(theme).resolved(dark: dark) }
-    var palette: CatppuccinPalette? { resolvedTheme.palette }
+    var resolvedTheme: DiagramTheme { DiagramTheme.preference(theme) }
+    var palette: DiagramPalette? { resolvedTheme.palette }
     var isDark: Bool { palette?.isDark ?? (dark || resolvedTheme == .dark) }
     var dictionary: [String: Any] {
         var value: [String: Any] = ["theme": resolvedTheme.rawValue, "dark": isDark, "grid": grid, "curve": curve]

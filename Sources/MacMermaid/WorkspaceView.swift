@@ -9,7 +9,7 @@ struct WorkspaceView: View {
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("editorFontSize") private var fontSize = 14.0
     @AppStorage("lineWrap") private var lineWrap = true
-    @AppStorage("diagramTheme") private var theme = DiagramTheme.system.rawValue
+    @AppStorage("diagramTheme") private var theme = DiagramTheme.studio.rawValue
     @AppStorage("showGrid") private var showGrid = true
     @AppStorage("diagramCurve") private var curve = "basis"
     @State private var showTemplates = false
@@ -43,7 +43,7 @@ struct WorkspaceView: View {
             Button("OK") { session.exportError = nil }
         } message: { Text(session.exportError ?? "") }
         .focusedSceneValue(\.workspace, WorkspaceActions(session: session, showTemplates: { showTemplates = true }, toggleEditor: { showEditor.toggle() }, toggleInspector: { showInspector.toggle() }))
-        .onAppear { render(); updateFilename() }
+        .onAppear { DiagramTheme.migratePreference(in: .standard); render(); updateFilename() }
         .onChange(of: document.text) { render() }
         .onChange(of: options) { render() }
         .onChange(of: fileURL) { updateFilename() }
@@ -67,7 +67,7 @@ struct WorkspaceView: View {
             }
             .padding(.horizontal, 18).frame(height: 46)
             Divider().opacity(0.5)
-            CodeEditor(text: $document.text, fontSize: fontSize, wraps: lineWrap, dark: options.palette?.isDark ?? (colorScheme == .dark), palette: options.palette) { newLine, newColumn in
+            CodeEditor(text: $document.text, fontSize: fontSize, wraps: lineWrap, dark: colorScheme == .dark) { newLine, newColumn in
                 // NSTextView selection notifications can arrive during a SwiftUI update.
                 DispatchQueue.main.async { line = newLine; column = newColumn }
             }
@@ -198,29 +198,8 @@ struct WorkspaceView: View {
                     Button { showInspector = false } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .semibold)) }.buttonStyle(.plain).foregroundStyle(.secondary).help("Close appearance")
                 }
                 VStack(alignment: .leading, spacing: 12) {
-                    inspectorLabel("COLOR THEME")
-                    Button { theme = DiagramTheme.system.rawValue } label: {
-                        HStack(spacing: 8) {
-                            Image(systemName: "circle.lefthalf.filled")
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text("Automatic").font(.system(size: 11, weight: .medium))
-                                Text("Latte / Mocha · Follows appearance")
-                                    .font(.system(size: 9)).foregroundStyle(.secondary)
-                            }
-                            Spacer(minLength: 0)
-                            if DiagramTheme.preference(theme) == .system {
-                                Image(systemName: "checkmark").font(.system(size: 9, weight: .bold)).foregroundStyle(accent)
-                            }
-                        }.padding(10).frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
-                            .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(DiagramTheme.preference(theme) == .system ? accent.opacity(0.6) : .clear))
-                    }.buttonStyle(.plain)
-                        .accessibilityLabel("Automatic Catppuccin theme")
-                        .accessibilityValue(DiagramTheme.preference(theme) == .system ? "Selected" : "Not selected")
-                    inspectorLabel("CATPPUCCIN · EDITOR + DIAGRAM")
-                    themeGrid([.latte, .mocha])
-                    inspectorLabel("OTHER DIAGRAM THEMES")
-                    themeGrid([.studio, .ocean, .auto, .forest, .neutral, .dark])
+                    inspectorLabel("THEMES")
+                    themeGrid(DiagramTheme.allCases)
                 }
                 VStack(alignment: .leading, spacing: 12) {
                     inspectorLabel("CONNECTIONS")
@@ -264,7 +243,8 @@ struct WorkspaceView: View {
                             }
                         }
                         HStack(spacing: 4) {
-                            Text(option.title).font(.system(size: 10, weight: .medium)).lineLimit(1)
+                            Text(option.title).font(.system(size: 10, weight: .medium))
+                                .lineLimit(2).frame(minHeight: 24, alignment: .topLeading)
                             Spacer(minLength: 0)
                             Image(systemName: "checkmark").font(.system(size: 9, weight: .bold))
                                 .foregroundStyle(accent).opacity(theme == option.rawValue ? 1 : 0)
@@ -273,7 +253,7 @@ struct WorkspaceView: View {
                         .background(theme == option.rawValue ? accent.opacity(0.1) : Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
                         .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(theme == option.rawValue ? accent.opacity(0.6) : .clear))
                 }.buttonStyle(.plain)
-                    .accessibilityLabel(option.palette == nil ? option.title : "Catppuccin \(option.title)")
+                    .accessibilityLabel(option.title)
                     .accessibilityValue(theme == option.rawValue ? "Selected" : "Not selected")
             }
         }
