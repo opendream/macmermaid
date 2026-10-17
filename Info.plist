@@ -14,7 +14,7 @@
   <key>NSHighResolutionCapable</key><true/>
   <key>NSSupportsAutomaticTermination</key><true/>
   <key>NSSupportsSuddenTermination</key><true/>
-  <key>NSHumanReadableCopyright</key><string>MacMermaid. Mermaid is MIT licensed.</string>
+  <key>NSHumanReadableCopyright</key><string>Copyright © 2026 Opendream and MacMermaid contributors. MIT licensed. Third-party components retain their respective licenses.</string>
   <key>CFBundleDocumentTypes</key><array><dict>
     <key>CFBundleTypeName</key><string>Mermaid Diagram</string>
     <key>CFBundleTypeRole</key><string>Editor</string>

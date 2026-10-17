@@ -1,0 +1,1097 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-10-17",
+  "bundle": {
+    "path": "Sources/MacMermaid/Resources/Web/mermaid.min.js",
+    "version": "11.16.1",
+    "sha256": "18327bef70d96fb505fe7287d9f6a7362ebf07ff6576ddfaffb1a06f3e1a2954",
+    "distribution": "https://www.npmjs.com/package/mermaid/v/11.16.1",
+    "modifiedByMacMermaid": false
+  },
+  "sourceMaps": [
+    {
+      "path": "mermaid/dist/mermaid.min.js.map",
+      "sha256": "41fa96e141da409c4e6fd33b9e87e4d7e844a8ebc088851d7a394d80362c946f"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-KEIR6QF5.mjs.map",
+      "sha256": "1393b4f51834b5ff5dfa07478537c2c320df16f1087391b4fc8f4712d03288e7"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-QBLGF6JB.mjs.map",
+      "sha256": "7d9657c6ec002b84b7c15bb3d065c06f0b8558138d867159f5a00dcfcbd07464"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-5TONJI2A.mjs.map",
+      "sha256": "b2fc8f5373fe8e2571a072e04901eaa071acbc651c4018f6d461d8d7d47015bd"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-U6XO7XAA.mjs.map",
+      "sha256": "5ceb607bb0a519f645bd89f03bc8823aa66dc679a2927559698b79a54346ba03"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-5HE753X5.mjs.map",
+      "sha256": "66016691c072207af8652feb584708ab342f3d58cb4bd48e8c4ca40668a7f3d9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-JG7HCLWE.mjs.map",
+      "sha256": "8ef31b906287150cd95932b76c990eb980e9cca8e43523761f3625de6773548d"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-R7FJI6CG.mjs.map",
+      "sha256": "09bd07ea4d5458649b00832b36f80bdce1cb550101318d09eb7d7e0f579a00b0"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-5FCAYU7R.mjs.map",
+      "sha256": "34bbc9fc3bd91d7a37a58892deb4dc7c001eb0689d3c8445ffe1abbd21faa1ec"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-OSBZ3O6U.mjs.map",
+      "sha256": "e161c69567810e0c71456d55f5571fd2d48cdabba8a365722960b0cecd71f6c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-CYSBUYHQ.mjs.map",
+      "sha256": "9caa9a25e9871d8dd6fc51419d10c68a9c56c51995235df8f993acf76399a7e8"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-BIQX33UG.mjs.map",
+      "sha256": "433f3780260d1ca36baead227918170871651fce18332ca9085af91c3ee78b00"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-EMLP6XTP.mjs.map",
+      "sha256": "766ec0381fc4911f4b999c2cb7b743015d5d4f6bbfe4e7d83f22e261dd403dae"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-YOTPTUD7.mjs.map",
+      "sha256": "9e05585afbe4cbdf5c51e99f7271fc98c4a3d27a8c3c8953bc237aafc69578e2"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-CQNSW5MT.mjs.map",
+      "sha256": "701eb5ca8066db01a9af7995a245ec6cd22d5dc6b86607013e15cdc1c929c0dd"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-MOZMSUNE.mjs.map",
+      "sha256": "48125401c007ec97814fb6e7c129002e2dc320814f9f9ef79f57dbe6094b26cf"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/chunk-5JV3BV7I.mjs.map",
+      "sha256": "0cd690efc2f193950e5303d694312966e5e3c31d7a9eb7420292871dcf991e9a"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/info-DKCQHKI2.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/packet-7NZHBO7P.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/pie-RZYD4A2V.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/treeView-QDETBFTQ.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/architecture-TIHT7OUA.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/gitGraph-TEB2WS4Q.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/eventmodeling-45OFAUF4.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/radar-I7S5WNFK.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/railroad-3IZDKUUU.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/railroad-ebnf-EBAXGLYW.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/railroad-abnf-AHOZXSZD.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/railroad-peg-LSFZ7HO6.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/treemap-6X3UGDF4.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/wardley-OPB4EBWU.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/chunks/mermaid-parser.core/cynefin-VYW2F7L2.mjs.map",
+      "sha256": "ed562b0bba7ee7214e56ac7f728054b3496bec4597c94a4eb7b4179e6f5cb1c9"
+    },
+    {
+      "path": "@mermaid-js/parser/dist/mermaid-parser.core.mjs.map",
+      "sha256": "e54a4525848fc12d0688e3d46bc347952efeacdb9e725809545f04edeb306555"
+    }
+  ],
+  "notices": {
+    "path": "THIRD_PARTY_NOTICES.md",
+    "sha256": "98013802f343a784ee3b3b29ad4ad555c83eb49ac3eba4950a89e4ce9a8220f2"
+  },
+  "components": [
+    {
+      "id": "@braintree/sanitize-url@7.1.2",
+      "name": "@braintree/sanitize-url",
+      "version": "7.1.2",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/@braintree/sanitize-url/v/7.1.2",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "0984740e0c3d725c8044dec7edcefe1dbce180ef5a7bc710c251e19607000158",
+      "noticeAnchor": "component-1"
+    },
+    {
+      "id": "@chevrotain/gast@11.1.2",
+      "name": "@chevrotain/gast",
+      "version": "11.1.2",
+      "license": "Apache-2.0",
+      "licenseSource": "https://raw.githubusercontent.com/Chevrotain/chevrotain/v11.1.2/LICENSE.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "f4a7af6db3365f404aa80afdbf33c362f97cd4d682a7f414a54ffe7022310b35",
+      "noticeAnchor": "component-2"
+    },
+    {
+      "id": "@chevrotain/regexp-to-ast@11.1.2",
+      "name": "@chevrotain/regexp-to-ast",
+      "version": "11.1.2",
+      "license": "Apache-2.0",
+      "licenseSource": "https://raw.githubusercontent.com/Chevrotain/chevrotain/v11.1.2/LICENSE.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "f4a7af6db3365f404aa80afdbf33c362f97cd4d682a7f414a54ffe7022310b35",
+      "noticeAnchor": "component-3"
+    },
+    {
+      "id": "@chevrotain/utils@11.1.2",
+      "name": "@chevrotain/utils",
+      "version": "11.1.2",
+      "license": "Apache-2.0",
+      "licenseSource": "https://raw.githubusercontent.com/Chevrotain/chevrotain/v11.1.2/LICENSE.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "f4a7af6db3365f404aa80afdbf33c362f97cd4d682a7f414a54ffe7022310b35",
+      "noticeAnchor": "component-4"
+    },
+    {
+      "id": "@iconify/utils@3.0.2",
+      "name": "@iconify/utils",
+      "version": "3.0.2",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/iconify/iconify/48826b359b57266206f254c27849869ce6d00280/packages/utils/license.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License text checked against the upstream snapshot linked here; this is not a claim that the snapshot is the package source version.",
+      "note": "",
+      "licenseTextSHA256": "56fc930ed22382ada309ec7437ad44cfd6c3ac91fe4459fdfb5ffb4701edbde8",
+      "noticeAnchor": "component-5"
+    },
+    {
+      "id": "@mermaid-js/parser@1.2.0",
+      "name": "@mermaid-js/parser",
+      "version": "1.2.0",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/@mermaid-js/parser/v/1.2.0",
+      "evidence": "Mermaid distribution and matching nested parser sources.",
+      "note": "",
+      "licenseTextSHA256": "d374061c40bfb6f99c5033290caefda97a9b3e7e477e5ee02f487143ef2177e8",
+      "noticeAnchor": "component-6"
+    },
+    {
+      "id": "@upsetjs/venn.js@2.0.0",
+      "name": "@upsetjs/venn.js",
+      "version": "2.0.0",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/@upsetjs/venn.js/v/2.0.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "6a3508febf2cfccfee96597394543a6154a4bb0b1f91f28404be42c09e9fcb54",
+      "noticeAnchor": "component-7"
+    },
+    {
+      "id": "Catppuccin palettes",
+      "name": "Catppuccin palettes",
+      "version": null,
+      "license": "MIT",
+      "licenseSource": "https://github.com/catppuccin/palette/blob/main/LICENSE",
+      "evidence": "Latte and Mocha colors adapted in DiagramPalette.swift.",
+      "note": "",
+      "licenseTextSHA256": "814096d2c34cc216c624738a49356f32b7237733b4f7edb0685f4e50ef5074ba",
+      "noticeAnchor": "component-8"
+    },
+    {
+      "id": "chevrotain-allstar@0.3.1",
+      "name": "chevrotain-allstar",
+      "version": "0.3.1",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/TypeFox/chevrotain-allstar/main/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License text checked against the upstream snapshot linked here; this is not a claim that the snapshot is the package source version.",
+      "note": "",
+      "licenseTextSHA256": "61a510d06eccead56b802d9919e0575f0bbdd9dbdd35b886fb83e2ec391126e5",
+      "noticeAnchor": "component-9"
+    },
+    {
+      "id": "chevrotain@11.1.2",
+      "name": "chevrotain",
+      "version": "11.1.2",
+      "license": "Apache-2.0",
+      "licenseSource": "https://raw.githubusercontent.com/Chevrotain/chevrotain/v11.1.2/LICENSE.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "f4a7af6db3365f404aa80afdbf33c362f97cd4d682a7f414a54ffe7022310b35",
+      "noticeAnchor": "component-10"
+    },
+    {
+      "id": "cose-base@1.0.3",
+      "name": "cose-base",
+      "version": "1.0.3",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/cose-base/v/1.0.3",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "5fb3cf4a14c3c5af6e473a192df8bca10c77754e3a0c6492c79fb92a76a5478a",
+      "noticeAnchor": "component-11"
+    },
+    {
+      "id": "cose-base@2.2.0",
+      "name": "cose-base",
+      "version": "2.2.0",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/cose-base/v/2.2.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "5fb3cf4a14c3c5af6e473a192df8bca10c77754e3a0c6492c79fb92a76a5478a",
+      "noticeAnchor": "component-12"
+    },
+    {
+      "id": "Cytoscape embedded MIT utilities",
+      "name": "Cytoscape embedded MIT utilities",
+      "version": null,
+      "license": "MIT",
+      "licenseSource": "https://github.com/cytoscape/cytoscape.js/tree/v3.33.3",
+      "evidence": "Attributions preserved in mermaid.min.js and its matching source map.",
+      "note": "",
+      "licenseTextSHA256": "14b56b2a5605c48c5ad7042c0895153b9730d737209ab4b44027c3fd3d5b8494",
+      "noticeAnchor": "component-13"
+    },
+    {
+      "id": "cytoscape-cose-bilkent@4.1.0",
+      "name": "cytoscape-cose-bilkent",
+      "version": "4.1.0",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/cytoscape-cose-bilkent/v/4.1.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "2a20d65f19a9aa5f076fc3f336501fc919ac6c0a675670462bc9ae2eb3f20613",
+      "noticeAnchor": "component-14"
+    },
+    {
+      "id": "cytoscape-fcose@2.2.0",
+      "name": "cytoscape-fcose",
+      "version": "2.2.0",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/cytoscape-fcose/v/2.2.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "2837634f403949215760fcdd2fa1ed0c64875d02099ecc8318c704b852f1421d",
+      "noticeAnchor": "component-15"
+    },
+    {
+      "id": "cytoscape@3.33.3",
+      "name": "cytoscape",
+      "version": "3.33.3",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/cytoscape/cytoscape.js/v3.33.3/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "f7ebdc2a36c48b5413fe0b60f7a16b6163ff171d5bb35f27dfda432962dd4f49",
+      "noticeAnchor": "component-16"
+    },
+    {
+      "id": "d3-array@2.12.1",
+      "name": "d3-array",
+      "version": "2.12.1",
+      "license": "BSD-3-Clause",
+      "licenseSource": "https://www.npmjs.com/package/d3-array/v/2.12.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "0747bebeb06b10954913149be9b9a8bdf6fad3e6fdcbd9f9524e7a94c13d2cea",
+      "noticeAnchor": "component-17"
+    },
+    {
+      "id": "d3-array@3.2.4",
+      "name": "d3-array",
+      "version": "3.2.4",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-array/v/3.2.4",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "3e6849627f74ff73c257a3ae1efb574015d94fc1035c05ec3c15805165efcbc4",
+      "noticeAnchor": "component-18"
+    },
+    {
+      "id": "d3-axis@3.0.0",
+      "name": "d3-axis",
+      "version": "3.0.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-axis/v/3.0.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-19"
+    },
+    {
+      "id": "d3-brush@3.0.0",
+      "name": "d3-brush",
+      "version": "3.0.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-brush/v/3.0.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-20"
+    },
+    {
+      "id": "d3-chord@3.0.1",
+      "name": "d3-chord",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-chord/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-21"
+    },
+    {
+      "id": "d3-color@3.1.0",
+      "name": "d3-color",
+      "version": "3.1.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-color/v/3.1.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884",
+      "noticeAnchor": "component-22"
+    },
+    {
+      "id": "d3-contour@4.0.2",
+      "name": "d3-contour",
+      "version": "4.0.2",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-contour/v/4.0.2",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e51cba0e4fa1d8c078e15319868f2b90188f413f9ce9dac1043b62db32901e93",
+      "noticeAnchor": "component-23"
+    },
+    {
+      "id": "d3-delaunay@6.0.4",
+      "name": "d3-delaunay",
+      "version": "6.0.4",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-delaunay/v/6.0.4",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "582c3022bd01942336095f92b58a90b1be624dc547d987555c6c956512dd24c1",
+      "noticeAnchor": "component-24"
+    },
+    {
+      "id": "d3-dispatch@3.0.1",
+      "name": "d3-dispatch",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-dispatch/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-25"
+    },
+    {
+      "id": "d3-drag@3.0.0",
+      "name": "d3-drag",
+      "version": "3.0.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-drag/v/3.0.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-26"
+    },
+    {
+      "id": "d3-dsv@3.0.1",
+      "name": "d3-dsv",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-dsv/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "7842a82012622e5a37bfe4f6c1b67cd3bae6350716b5bf87f36cea0bdc1319dc",
+      "noticeAnchor": "component-27"
+    },
+    {
+      "id": "d3-ease@3.0.1",
+      "name": "d3-ease",
+      "version": "3.0.1",
+      "license": "BSD-3-Clause",
+      "licenseSource": "https://www.npmjs.com/package/d3-ease/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "b989d9085148d21ff64a75e14462aefa06b2589a55553b07b1460c70081c7d08",
+      "noticeAnchor": "component-28"
+    },
+    {
+      "id": "d3-fetch@3.0.1",
+      "name": "d3-fetch",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-fetch/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "ffdc17dc9040006bddeb891c95bfbb492e86d6bc64a4a4233666febab1be35e0",
+      "noticeAnchor": "component-29"
+    },
+    {
+      "id": "d3-force@3.0.0",
+      "name": "d3-force",
+      "version": "3.0.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-force/v/3.0.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-30"
+    },
+    {
+      "id": "d3-format@3.1.0",
+      "name": "d3-format",
+      "version": "3.1.0",
+      "license": "ISC",
+      "licenseSource": "https://raw.githubusercontent.com/d3/d3-format/v3.1.0/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-31"
+    },
+    {
+      "id": "d3-geo@3.1.1",
+      "name": "d3-geo",
+      "version": "3.1.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-geo/v/3.1.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "3e3edc1224eec9c39cd26491a21304a62883c1e5b6a65c5283ccc7a6cc94baee",
+      "noticeAnchor": "component-32"
+    },
+    {
+      "id": "d3-hierarchy@3.1.2",
+      "name": "d3-hierarchy",
+      "version": "3.1.2",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-hierarchy/v/3.1.2",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-33"
+    },
+    {
+      "id": "d3-interpolate@3.0.1",
+      "name": "d3-interpolate",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-interpolate/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-34"
+    },
+    {
+      "id": "d3-path@1.0.9",
+      "name": "d3-path",
+      "version": "1.0.9",
+      "license": "BSD-3-Clause",
+      "licenseSource": "https://www.npmjs.com/package/d3-path/v/1.0.9",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "b8265327ab678f554800e71188b1cc6b1ff57522e292d2b1c0be66f27cf328b6",
+      "noticeAnchor": "component-35"
+    },
+    {
+      "id": "d3-path@3.1.0",
+      "name": "d3-path",
+      "version": "3.1.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-path/v/3.1.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "a09b0d6d76e768fca2085fad05743ee81ddd11946bcda160a3cf5e1081a479aa",
+      "noticeAnchor": "component-36"
+    },
+    {
+      "id": "d3-polygon@3.0.1",
+      "name": "d3-polygon",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-polygon/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-37"
+    },
+    {
+      "id": "d3-quadtree@3.0.1",
+      "name": "d3-quadtree",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-quadtree/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-38"
+    },
+    {
+      "id": "d3-random@3.0.1",
+      "name": "d3-random",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-random/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-39"
+    },
+    {
+      "id": "d3-sankey@0.12.3",
+      "name": "d3-sankey",
+      "version": "0.12.3",
+      "license": "BSD-3-Clause",
+      "licenseSource": "https://www.npmjs.com/package/d3-sankey/v/0.12.3",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "2bf785e778d67a4f5266cffcd4f2cc5bb98cde73791666e7efeb8002ba32dfa5",
+      "noticeAnchor": "component-40"
+    },
+    {
+      "id": "d3-scale-chromatic@3.1.0",
+      "name": "d3-scale-chromatic",
+      "version": "3.1.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-scale-chromatic/v/3.1.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "0986d93944902cca9af86824b6a641b4b7c2d10602fc510c433a8bcd443919fe",
+      "noticeAnchor": "component-41"
+    },
+    {
+      "id": "d3-scale@4.0.2",
+      "name": "d3-scale",
+      "version": "4.0.2",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-scale/v/4.0.2",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-42"
+    },
+    {
+      "id": "d3-selection@3.0.0",
+      "name": "d3-selection",
+      "version": "3.0.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-selection/v/3.0.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-43"
+    },
+    {
+      "id": "d3-shape@1.3.7",
+      "name": "d3-shape",
+      "version": "1.3.7",
+      "license": "BSD-3-Clause",
+      "licenseSource": "https://www.npmjs.com/package/d3-shape/v/1.3.7",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "7eea8533ea92bd8c32a901e89ecb0305890905bb12711449565ddff96891146d",
+      "noticeAnchor": "component-44"
+    },
+    {
+      "id": "d3-shape@3.2.0",
+      "name": "d3-shape",
+      "version": "3.2.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-shape/v/3.2.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884",
+      "noticeAnchor": "component-45"
+    },
+    {
+      "id": "d3-time-format@4.1.0",
+      "name": "d3-time-format",
+      "version": "4.1.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-time-format/v/4.1.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-46"
+    },
+    {
+      "id": "d3-time@3.1.0",
+      "name": "d3-time",
+      "version": "3.1.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-time/v/3.1.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884",
+      "noticeAnchor": "component-47"
+    },
+    {
+      "id": "d3-timer@3.0.1",
+      "name": "d3-timer",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-timer/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-48"
+    },
+    {
+      "id": "d3-transition@3.0.1",
+      "name": "d3-transition",
+      "version": "3.0.1",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-transition/v/3.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-49"
+    },
+    {
+      "id": "d3-zoom@3.0.0",
+      "name": "d3-zoom",
+      "version": "3.0.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3-zoom/v/3.0.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee",
+      "noticeAnchor": "component-50"
+    },
+    {
+      "id": "d3@7.9.0",
+      "name": "d3",
+      "version": "7.9.0",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/d3/v/7.9.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "3e6849627f74ff73c257a3ae1efb574015d94fc1035c05ec3c15805165efcbc4",
+      "noticeAnchor": "component-51"
+    },
+    {
+      "id": "dagre-d3-es@7.0.14",
+      "name": "dagre-d3-es",
+      "version": "7.0.14",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/dagre-d3-es/v/7.0.14",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "d01eb84ccce437dbf5fd40853bceea0f287930920acea066597a4a25ead63858",
+      "noticeAnchor": "component-52"
+    },
+    {
+      "id": "dayjs@1.11.20",
+      "name": "dayjs",
+      "version": "1.11.20",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/iamkun/dayjs/v1.11.20/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "5faab7526d055651be3aab769d58897be6bd91f3d39d137f25f12dba1b31d5dc",
+      "noticeAnchor": "component-53"
+    },
+    {
+      "id": "dompurify@3.4.0",
+      "name": "dompurify",
+      "version": "3.4.0",
+      "license": "Apache-2.0 OR MPL-2.0",
+      "licenseSource": "https://github.com/cure53/DOMPurify/blob/3.4.0/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "MacMermaid redistributes DOMPurify under the Apache-2.0 option. The upstream license file, including both offered alternatives, is preserved below.",
+      "licenseTextSHA256": "9374d882678a2c713ae0811acfefd84e8cc23c540555b34668f63dda4824fae0",
+      "noticeAnchor": "component-54"
+    },
+    {
+      "id": "es-toolkit@1.45.1",
+      "name": "es-toolkit",
+      "version": "1.45.1",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/toss/es-toolkit/v1.45.1/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "ed68888a2a28f32a05e88f24d4d4ee75075a1bda2b6372a1f2e00fa0576a5524",
+      "noticeAnchor": "component-55"
+    },
+    {
+      "id": "fmin@0.0.4",
+      "name": "fmin",
+      "version": "0.0.4",
+      "license": "BSD-3-Clause",
+      "licenseSource": "https://raw.githubusercontent.com/benfred/fmin/master/LICENSE",
+      "evidence": "Optimization routines are bundled into @upsetjs/venn.js 2.0.0. Its source repository identifies fmin 0.0.4; preserve the upstream BSD notice.",
+      "note": "",
+      "licenseTextSHA256": "e4503e78185bff178d3ee91835f082d05771da1b3a2d795f17e03a40251bab77",
+      "noticeAnchor": "component-56"
+    },
+    {
+      "id": "hachure-fill@0.5.2",
+      "name": "hachure-fill",
+      "version": "0.5.2",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/hachure-fill/v/0.5.2",
+      "evidence": "Dependency included conservatively for the prebundled Rough.js source; version from the matching local npm dependency tree.",
+      "note": "",
+      "licenseTextSHA256": "5e807b516a9be9229ed459880bf353a336e2d947867247290680d437017be391",
+      "noticeAnchor": "component-57"
+    },
+    {
+      "id": "internmap@2.0.3",
+      "name": "internmap",
+      "version": "2.0.3",
+      "license": "ISC",
+      "licenseSource": "https://www.npmjs.com/package/internmap/v/2.0.3",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "9ea8903938dab5f12c4572d60725069bec2d1b0dc3bcc210b09bae946a5ebb1f",
+      "noticeAnchor": "component-58"
+    },
+    {
+      "id": "JamaJS SVD adaptation",
+      "name": "JamaJS SVD adaptation",
+      "version": null,
+      "license": "Apache-2.0",
+      "licenseSource": "https://raw.githubusercontent.com/dragonfly-ai/JamaJS/master/LICENSE",
+      "evidence": "layout-base 2.0.1 embeds SVD code adapted from dragonfly-ai/JamaJS. The upstream changes replace Jama matrices with 2D arrays, adjust dimensions and return values, remove parameter types, and use let instead of var.",
+      "note": "",
+      "licenseTextSHA256": "a8ad31b1c3f40dca5a84119351b8fa8ddc868edd77fad8a8ebf6d8f2d16fa4ae",
+      "noticeAnchor": "component-59"
+    },
+    {
+      "id": "js-yaml@4.1.1",
+      "name": "js-yaml",
+      "version": "4.1.1",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/nodeca/js-yaml/4.1.1/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "a07bc24468b9654ce76a547d47a2db282d07733b715db4c73a98bd63961f9550",
+      "noticeAnchor": "component-60"
+    },
+    {
+      "id": "KaTeX font-derived SVG shapes@0.16.45",
+      "name": "KaTeX font-derived SVG shapes",
+      "version": "0.16.45",
+      "license": "OFL-1.1",
+      "licenseSource": "https://github.com/KaTeX/KaTeX/blob/v0.16.45/src/svgGeometry.js",
+      "evidence": "The bundled KaTeX source attributes SVG shapes adapted from font glyphs to the SIL Open Font License 1.1. No font files are added by this licensing change.",
+      "note": "",
+      "licenseTextSHA256": "43a10a8ed0f2daa91ce3a7f0ff5e78ea32dc2063c5c65eab613d23ac84d95fc3",
+      "noticeAnchor": "component-61"
+    },
+    {
+      "id": "katex@0.16.45",
+      "name": "katex",
+      "version": "0.16.45",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/KaTeX/KaTeX/v0.16.45/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "766ccc1f306c885aa45542a9846bbd0a505b27a0374f146778171c2254ce18e3",
+      "noticeAnchor": "component-62"
+    },
+    {
+      "id": "khroma@2.1.0",
+      "name": "khroma",
+      "version": "2.1.0",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/khroma/v/2.1.0",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "66b333b0f66759a0b710459e03f7029abe17f4358114a128d2c972e642961b49",
+      "noticeAnchor": "component-63"
+    },
+    {
+      "id": "langium@4.2.0",
+      "name": "langium",
+      "version": "4.2.0",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/eclipse-langium/langium/v4.2.0/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "599bf70b4e55f06250571d103dbd8441e0c47cb7f858c0147ca312ce38e9ef2a",
+      "noticeAnchor": "component-64"
+    },
+    {
+      "id": "layout-base@1.0.2",
+      "name": "layout-base",
+      "version": "1.0.2",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/layout-base/v/1.0.2",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "eabb762d8a95109a39c9be3247325529a5239a7aca327d909c3ccdc41f3a06bf",
+      "noticeAnchor": "component-65"
+    },
+    {
+      "id": "layout-base@2.0.1",
+      "name": "layout-base",
+      "version": "2.0.1",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/layout-base/v/2.0.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "eabb762d8a95109a39c9be3247325529a5239a7aca327d909c3ccdc41f3a06bf",
+      "noticeAnchor": "component-66"
+    },
+    {
+      "id": "lodash-es@4.17.23",
+      "name": "lodash-es",
+      "version": "4.17.23",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/lodash/lodash/4.17.23/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+      "noticeAnchor": "component-67"
+    },
+    {
+      "id": "lodash-es@4.18.1",
+      "name": "lodash-es",
+      "version": "4.18.1",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/lodash-es/v/4.18.1",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "",
+      "licenseTextSHA256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+      "noticeAnchor": "component-68"
+    },
+    {
+      "id": "marked@16.3.0",
+      "name": "marked",
+      "version": "16.3.0",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/markedjs/marked/v16.3.0/LICENSE.md",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "8e3a3f82f59a60958f56ca08f445647c32a4733dc7ca6c2c46f6eb898471ab9c",
+      "noticeAnchor": "component-69"
+    },
+    {
+      "id": "mermaid@11.16.1",
+      "name": "mermaid",
+      "version": "11.16.1",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/mermaid/v/11.16.1",
+      "evidence": "Mermaid distribution and matching nested parser sources.",
+      "note": "",
+      "licenseTextSHA256": "ec9fb67dcb25eccc416ed56e1aab819222c805a2a4bfe4cb19e7556bf2ffde80",
+      "noticeAnchor": "component-70"
+    },
+    {
+      "id": "path-browserify",
+      "name": "path-browserify",
+      "version": null,
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/browserify/path-browserify/v1.0.1/LICENSE",
+      "evidence": "Embedded in vscode-uri; webpack://LIB/node_modules/path-browserify/index.js. Exact embedded version is not encoded in that path.",
+      "note": "",
+      "licenseTextSHA256": "a22b9d5763f574e5db347c30acc0b33eaf4846767c03d2e27d012e864e79a824",
+      "noticeAnchor": "component-71"
+    },
+    {
+      "id": "path-data-parser@0.1.0",
+      "name": "path-data-parser",
+      "version": "0.1.0",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/path-data-parser/v/0.1.0",
+      "evidence": "Dependency included conservatively for the prebundled Rough.js source; version from the matching local npm dependency tree.",
+      "note": "",
+      "licenseTextSHA256": "e9754a00aebde654e80f40bcf41dab667d6a41dfbbd2912bcf14fb07d468bf71",
+      "noticeAnchor": "component-72"
+    },
+    {
+      "id": "points-on-curve@0.2.0",
+      "name": "points-on-curve",
+      "version": "0.2.0",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/points-on-curve/v/0.2.0",
+      "evidence": "Dependency included conservatively for the prebundled Rough.js source; version from the matching local npm dependency tree.",
+      "note": "",
+      "licenseTextSHA256": "e9754a00aebde654e80f40bcf41dab667d6a41dfbbd2912bcf14fb07d468bf71",
+      "noticeAnchor": "component-73"
+    },
+    {
+      "id": "points-on-path@0.2.1",
+      "name": "points-on-path",
+      "version": "0.2.1",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/points-on-path/v/0.2.1",
+      "evidence": "Dependency included conservatively for the prebundled Rough.js source; version from the matching local npm dependency tree.",
+      "note": "",
+      "licenseTextSHA256": "b6fc1f7f1d96a48bc97176f3dcef959e364c5c17ba44167511de421500a86c6c",
+      "noticeAnchor": "component-74"
+    },
+    {
+      "id": "React utility adaptations in KaTeX",
+      "name": "React utility adaptations in KaTeX",
+      "version": null,
+      "license": "Apache-2.0",
+      "licenseSource": "https://github.com/KaTeX/KaTeX/blob/v0.16.45/src/utils.js",
+      "evidence": "KaTeX source attribution: hyphenate and escape adapted from Facebook's React under Apache 2 license. These are the adapted functions inside KaTeX, not a React runtime dependency.",
+      "note": "",
+      "licenseTextSHA256": "50e6751797c50dedd75ef1b8a0d9e42f5f8472e9fbce91f34718e9f97b0c780a",
+      "noticeAnchor": "component-75"
+    },
+    {
+      "id": "roughjs@4.6.6",
+      "name": "roughjs",
+      "version": "4.6.6",
+      "license": "MIT",
+      "licenseSource": "https://www.npmjs.com/package/roughjs/v/4.6.6",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License copied from the cached npm package with the same name and version.",
+      "note": "Mermaid carries an upstream-patched Rough.js build (patch hash 3543d47108cb41b68ec6a671c0e1f9d0cfe2ce524fea5b0992511ae84c3c6b64). MacMermaid leaves the Mermaid bundle unchanged.",
+      "licenseTextSHA256": "dca9a392272606ac748ac0976a2a1133f14eef841c27beaa51a844d53c56a09d",
+      "noticeAnchor": "component-76"
+    },
+    {
+      "id": "stylis@4.3.6",
+      "name": "stylis",
+      "version": "4.3.6",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/thysultan/stylis/v4.3.6/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "88c579c6ee44b41137a21321190d177982e5b17d4fa1b83a4a2e3ea325a8fc9a",
+      "noticeAnchor": "component-77"
+    },
+    {
+      "id": "Tokyo Night palettes",
+      "name": "Tokyo Night palettes",
+      "version": null,
+      "license": "Apache-2.0",
+      "licenseSource": "https://github.com/folke/tokyonight.nvim/blob/cdc07ac78467a233fd62c493de29a17e0cf2b2b6/LICENSE",
+      "evidence": "Official Day and Night colors adapted in DiagramPalette.swift to Mermaid roles; token names and color mappings differ from the original Lua palette. The file carries an adaptation notice.",
+      "note": "",
+      "licenseTextSHA256": "50e6751797c50dedd75ef1b8a0d9e42f5f8472e9fbce91f34718e9f97b0c780a",
+      "noticeAnchor": "component-78"
+    },
+    {
+      "id": "ts-dedent@2.2.0",
+      "name": "ts-dedent",
+      "version": "2.2.0",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/tamino-martinius/node-ts-dedent/v2.3.0/LICENSE",
+      "evidence": "Version identified in Mermaid or its nested parser source map. License text checked against the upstream snapshot linked here; this is not a claim that the snapshot is the package source version.",
+      "note": "",
+      "licenseTextSHA256": "eff13095d9d762c3bd9dda74370c81e2130c28f2691bc455603abf973bac25b9",
+      "noticeAnchor": "component-79"
+    },
+    {
+      "id": "uuid@14.0.0",
+      "name": "uuid",
+      "version": "14.0.0",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/uuidjs/uuid/v14.0.0/LICENSE.md",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "beaa6b04fb82e41dd2ad679e19e27953afb5999b1abbb455b6564e78ebfeb332",
+      "noticeAnchor": "component-80"
+    },
+    {
+      "id": "vscode-jsonrpc@8.2.0",
+      "name": "vscode-jsonrpc",
+      "version": "8.2.0",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/microsoft/vscode-languageserver-node/release/protocol/3.17.5/License.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "315c9a222c0f10acbb60b62053c47b1a82624f956e0229c3c828bc525ebc23ca",
+      "noticeAnchor": "component-81"
+    },
+    {
+      "id": "vscode-languageserver-protocol@3.17.5",
+      "name": "vscode-languageserver-protocol",
+      "version": "3.17.5",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/microsoft/vscode-languageserver-node/release/protocol/3.17.5/License.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "315c9a222c0f10acbb60b62053c47b1a82624f956e0229c3c828bc525ebc23ca",
+      "noticeAnchor": "component-82"
+    },
+    {
+      "id": "vscode-languageserver-textdocument@1.0.12",
+      "name": "vscode-languageserver-textdocument",
+      "version": "1.0.12",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/microsoft/vscode-languageserver-node/release/textDocument/1.0.12/License.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "315c9a222c0f10acbb60b62053c47b1a82624f956e0229c3c828bc525ebc23ca",
+      "noticeAnchor": "component-83"
+    },
+    {
+      "id": "vscode-languageserver-types@3.17.5",
+      "name": "vscode-languageserver-types",
+      "version": "3.17.5",
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/microsoft/vscode-languageserver-node/release/protocol/3.17.5/License.txt",
+      "evidence": "Version identified in Mermaid or its nested parser source map.",
+      "note": "",
+      "licenseTextSHA256": "315c9a222c0f10acbb60b62053c47b1a82624f956e0229c3c828bc525ebc23ca",
+      "noticeAnchor": "component-84"
+    },
+    {
+      "id": "vscode-uri",
+      "name": "vscode-uri",
+      "version": null,
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/microsoft/vscode-uri/main/LICENSE.md",
+      "evidence": "URI sources appear as webpack://LIB/src/... in the nested parser map. No exact version is encoded in those source paths.",
+      "note": "",
+      "licenseTextSHA256": "5bf78228f68c7cd7811974f8e98a4c9bec9fdf4adf5c2a3f222184898c669f5b",
+      "noticeAnchor": "component-85"
+    },
+    {
+      "id": "webpack runtime",
+      "name": "webpack runtime",
+      "version": null,
+      "license": "MIT",
+      "licenseSource": "https://raw.githubusercontent.com/webpack/webpack/main/LICENSE",
+      "evidence": "Generated runtime helpers appear in the nested parser source map. Exact webpack version is not encoded there.",
+      "note": "",
+      "licenseTextSHA256": "9068a8782d2fb4c6e432cfa25334efa56f722822180570802bf86e71b6003b1e",
+      "noticeAnchor": "component-86"
+    }
+  ]
+}
