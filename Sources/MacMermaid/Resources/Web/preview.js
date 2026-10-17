@@ -7,6 +7,7 @@
   let pending = null, running = false, newest = 0, serial = 0;
   let width = 0, height = 0, scale = 1, x = 0, y = 0, fitting = true, dark = false;
   let currentSVG = null;
+  let currentBackground = '#eff1f5';
 
   function transform() {
     stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
@@ -33,7 +34,28 @@
     const isDark = options.dark;
     let theme = options.theme;
     let themeVariables = {fontFamily: '-apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif', fontSize: '15px'};
-    if (theme === 'studio' || theme === 'ocean') {
+    if (options.palette) {
+      const p = options.palette;
+      theme = 'base';
+      themeVariables = {...themeVariables, darkMode: isDark,
+        background: p.base, primaryColor: p.surface0, primaryTextColor: p.text,
+        primaryBorderColor: p.mauve, lineColor: p.subtext1, textColor: p.text,
+        secondaryColor: p.mantle, secondaryTextColor: p.text, secondaryBorderColor: p.blue,
+        tertiaryColor: p.surface1, tertiaryTextColor: p.text, tertiaryBorderColor: p.teal,
+        edgeLabelBackground: p.base, clusterBkg: p.mantle, clusterBorder: p.surface2,
+        titleColor: p.text, nodeTextColor: p.text,
+        actorBkg: p.surface0, actorBorder: p.mauve, actorTextColor: p.text,
+        actorLineColor: p.subtext1, signalColor: p.subtext1, signalTextColor: p.text,
+        labelBoxBkgColor: p.mantle, labelBoxBorderColor: p.mauve, labelTextColor: p.text,
+        loopTextColor: p.text, noteBkgColor: p.surface0, noteBorderColor: p.yellow, noteTextColor: p.text,
+        activationBkgColor: p.surface1, activationBorderColor: p.mauve,
+        pieTitleTextColor: p.text, pieSectionTextColor: p.base, pieLegendTextColor: p.text,
+        pieStrokeColor: p.base, pieOuterStrokeColor: p.surface2,
+        cScaleLabel0: p.text, cScaleLabel1: p.text, cScaleLabel2: p.text
+      };
+      [p.mauve, p.blue, p.teal, p.green, p.peach, p.yellow, p.pink, p.red, p.lavender, p.rosewater, p.subtext0, p.overlay1]
+        .forEach((color, index) => { themeVariables[`pie${index + 1}`] = color; });
+    } else if (theme === 'studio' || theme === 'ocean') {
       const ocean = theme === 'ocean';
       theme = 'base';
       themeVariables = {...themeVariables, darkMode: isDark,
@@ -69,6 +91,9 @@
         pending = null;
         const {source, options, revision} = request;
         dark = options.dark;
+        const background = options.palette?.base || (dark ? '#172024' : '#f7f9fa');
+        document.documentElement.style.setProperty('--canvas', background);
+        document.documentElement.style.setProperty('--dot', options.palette?.surface0 || (dark ? '#344348' : '#cdd6d8'));
         document.documentElement.classList.toggle('dark', dark);
         viewport.classList.toggle('grid', options.grid);
         if (!source.trim()) {
@@ -89,6 +114,7 @@
           svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
           svg.style.maxWidth = 'none';
           currentSVG = new XMLSerializer().serializeToString(svg);
+          currentBackground = background;
           stage.innerHTML = currentSVG;
           if (fitting || serial === 1) fit(); else transform();
           post({type: 'rendered', revision, svg: currentSVG, width, height, milliseconds: Math.round(performance.now() - start)});
@@ -109,7 +135,7 @@
     const background = dom.createElementNS('http://www.w3.org/2000/svg', 'rect');
     background.setAttribute('x', box[0]); background.setAttribute('y', box[1]);
     background.setAttribute('width', box[2]); background.setAttribute('height', box[3]);
-    background.setAttribute('fill', dark ? '#172024' : '#f7f9fa');
+    background.setAttribute('fill', currentBackground);
     svg.insertBefore(background, svg.firstChild);
     return new XMLSerializer().serializeToString(svg);
   }

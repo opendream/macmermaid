@@ -20,11 +20,11 @@ The app bundle is built for your Mac's architecture and signed locally. To build
 - Live rendering with a 250 ms debounce. Syntax errors preserve the last valid preview; export is disabled until the current text renders successfully.
 - Local `.mmd` and `.mermaid` documents, multiple windows, native window tabs, recent files, autosave, and macOS document version support. Use **Window → Merge All Windows** to collect documents into tabs.
 - Twelve templates, each opening a new document rather than replacing your work.
-- Six diagram themes, three flowchart connector styles, light/dark/system appearance, and a dotted canvas.
+- Catppuccin Latte/Mocha for the editor and diagram canvas, following system appearance by default, with persistent manual choices. Six original diagram themes remain available. Three flowchart connector styles and an optional dotted canvas.
 - Pan by dragging or scrolling. Pinch or Command-scroll to zoom. Double-click the canvas to fit.
 - SVG, PNG, and vector PDF export; copy SVG to the clipboard. Exports contain the complete diagram, independent of the current zoom or pan, without canvas dots. PNG exports use 2× resolution where possible, capped at 8192 pixels per side and 24 million pixels.
 
-Save a new document once with **⌘S** to choose its location; macOS then manages autosave. App appearance is in **MacMermaid → Settings**. Diagram colors and connector styles are in the toolbar's appearance inspector.
+Save a new document once with **⌘S** to choose its location; macOS then manages autosave. App appearance is in **MacMermaid → Settings**. Color themes and connector styles are in the toolbar's appearance inspector. **Automatic** uses Catppuccin Latte in light appearance and Mocha in dark appearance, updating both source highlighting and the canvas as appearance changes. Select **Latte** or **Mocha** to pin a palette independently of app appearance; this choice survives relaunches. Existing explicit theme choices are preserved. The native toolbar and inspector keep their system appearance. Palette values come from the [official Catppuccin palette](https://catppuccin.com/palette/).
 
 | Action | Shortcut |
 | --- | --- |
@@ -57,10 +57,10 @@ open -n build/MacMermaid.app --args --smoke-test "$PWD/build/smoke"
 cat build/smoke/results.txt
 ```
 
-The smoke test uses the actual packaged WebKit renderer, renders every template and theme, checks syntax-error recovery and rapid edits, exports all three formats, and writes export artifacts plus a preview snapshot. It also opens a real native document, inserts Unicode text through the editor, verifies autosave on disk, undoes the edit, and saves again. It exits its own app instance when finished. A `SUCCESS` line confirms completion. Unit tests cover UTF-8 document decoding and syntax highlighting with Unicode.
+The smoke test uses the actual packaged WebKit renderer, renders every template and theme, checks syntax-error recovery and rapid edits, exports all three formats, and writes export artifacts plus a preview snapshot. It also opens a real native document, inserts Unicode text through the editor, verifies autosave on disk, undoes the edit, and saves again. It exits its own app instance when finished. A `SUCCESS` line confirms completion. Unit tests cover UTF-8 document decoding, syntax highlighting with Unicode, automatic theme resolution, and preservation of saved theme choices. The smoke suite also exercises both Catppuccin palettes across every template, verifies palette colors in SVG/PNG/PDF exports, and checks live editor/canvas appearance changes and manual overrides in a native document window. It saves native workspace snapshots in both appearances at 1260×820 and the inspector-visible minimum of 960×540 (820×540 with the inspector closed).
 
 If your launcher cannot pass arguments, run `./scripts/prepare-smoke-app.sh` after building, then open `build/MacMermaid Smoke.app`. This separate test bundle uses its own app identifier and automatically writes results to `build/smoke`.
 
-Verified on macOS 27.0.1 with Xcode 27: five unit tests and the packaged smoke suite pass. PNG, preview, and PDF renderings were visually inspected. The desktop capture service failed during development, so the full native window's visual layout and mouse-driven interactions still need a manual pass.
+Verified on macOS 27.0.1 with Xcode 27: eight unit tests and the packaged smoke suite pass. PNG/PDF exports and native toolbar/inspector snapshots were visually inspected in both appearances at normal and minimum supported window sizes. The smoke test changes only its own app appearance; it does not change macOS appearance settings.
 
 The bundle uses ad hoc signing for local use. Distribution to other Macs would require a Developer ID signature and notarization.
