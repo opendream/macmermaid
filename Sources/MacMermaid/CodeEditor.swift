@@ -196,6 +196,8 @@ final class LineNumberRuler: NSRulerView {
     init(editor: NSTextView, scrollView: NSScrollView) {
         self.editor = editor
         super.init(scrollView: scrollView, orientation: .verticalRuler)
+        // Keep AppKit's ruler border inside the editor, out of the window chrome.
+        clipsToBounds = true
         clientView = editor
         ruleThickness = 48
         scrollView.contentView.postsBoundsChangedNotifications = true
