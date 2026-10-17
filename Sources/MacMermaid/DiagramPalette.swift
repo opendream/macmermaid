@@ -6,7 +6,8 @@ import SwiftUI
 /// Tokyo Night: https://github.com/folke/tokyonight.nvim/tree/main/extras/lua
 /// The upstream Day/Night colors are adapted to Mermaid roles using the same token
 /// names as Catppuccin (for example, mauve = magenta and peach = orange).
-/// Tokyo Night is Apache-2.0 licensed; its license is bundled in Resources/Web.
+/// Catppuccin is MIT licensed and Tokyo Night is Apache-2.0 licensed.
+/// Their license texts are bundled in Resources/Web; see THIRD_PARTY_NOTICES.md.
 enum DiagramPalette: String, CaseIterable {
     case latte, mocha
     case tokyoDay = "tokyo-day", tokyoNight = "tokyo-night"

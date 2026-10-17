@@ -2,6 +2,12 @@
 
 A native macOS workspace for thinking in diagrams. Write Mermaid on the left and see it render on the right, with Liquid Glass controls and an entirely local renderer.
 
+## License
+
+MacMermaid is licensed under the [MIT License](LICENSE), copyright © 2026 Opendream and MacMermaid contributors. Bundled third-party components retain their respective licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the full license texts and attributions.
+
+The build includes both files and the [dependency inventory](third-party/manifest.json) in the app's `Contents/Resources` directory. The inventory covers the pinned Mermaid bundle, its nested parser sources, additional embedded libraries, and palette adaptations. DOMPurify uses its Apache-2.0 option; Catppuccin retains MIT and Tokyo Night retains Apache-2.0. KaTeX's font-derived SVG shapes retain OFL-1.1.
+
 ## Run
 
 Requires macOS 26 or later and Xcode 26 or later (Swift 6.2+).
@@ -28,7 +34,7 @@ Save a new document once with **⌘S** to choose its location; macOS then manage
 
 The toolbar's appearance inspector contains one **Themes** grid for the diagram canvas and exports. **Latte**, **Mocha**, **Tokyo Day**, and **Tokyo Night** use fixed palettes independently of app appearance; the six original themes remain available. New users start with **Studio**. Existing explicit selections survive upgrades and relaunches; the removed Catppuccin **Automatic** selection migrates to Studio. Diagram themes do not recolor the editor, toolbar, or inspector.
 
-Palette values come from [Catppuccin](https://catppuccin.com/palette/) and [Tokyo Night's official Day/Night palettes](https://github.com/folke/tokyonight.nvim/tree/main/extras/lua), adapted to Mermaid diagram roles. Tokyo Night's Apache-2.0 license is bundled in `Sources/MacMermaid/Resources/Web/TOKYO-NIGHT-LICENSE.txt`.
+Palette values come from [Catppuccin](https://catppuccin.com/palette/) and [Tokyo Night's official Day/Night palettes](https://github.com/folke/tokyonight.nvim/tree/main/extras/lua), adapted to Mermaid diagram roles. Their MIT and Apache-2.0 license texts are bundled in `Sources/MacMermaid/Resources/Web/` and included in the third-party notices.
 
 | Action | Shortcut |
 | --- | --- |
@@ -53,6 +59,8 @@ SVG and PNG use a standalone SVG with an explicit background. PDF renders that S
 References: [Apple Liquid Glass](https://developer.apple.com/documentation/swiftui/applying-liquid-glass-to-custom-views), [Mermaid API](https://mermaid.js.org/config/usage.html). Mermaid and its bundled third-party notices are preserved in `Sources/MacMermaid/Resources/Web/`.
 
 ## Verification
+
+`scripts/build.sh` checks the renderer checksum and notice inventory before compiling, then verifies that the built app contains byte-identical license files. If Mermaid changes, audit the replacement bundle and its matching source maps, update the notices and inventory, and rerun `python3 scripts/check-licenses.py`. Updating a version number or checksum alone is not a dependency audit. See [the audit notes](third-party/README.md) for the evidence and update procedure.
 
 ```sh
 ./scripts/test.sh
