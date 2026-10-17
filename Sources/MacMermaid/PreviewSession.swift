@@ -4,10 +4,13 @@ import WebKit
 import UniformTypeIdentifiers
 
 enum DiagramTheme: String, CaseIterable, Identifiable {
-    case studio, ocean, auto, forest, neutral, dark
+    case system, latte, mocha, studio, ocean, auto, forest, neutral, dark
     var id: String { rawValue }
     var title: String {
         switch self {
+        case .system: "Automatic"
+        case .latte: "Latte"
+        case .mocha: "Mocha"
         case .studio: "Studio"
         case .ocean: "Ocean"
         case .auto: "Mermaid"
@@ -18,6 +21,9 @@ enum DiagramTheme: String, CaseIterable, Identifiable {
     }
     var colors: [Color] {
         switch self {
+        case .system: CatppuccinPalette.latte.swatches
+        case .latte: CatppuccinPalette.latte.swatches
+        case .mocha: CatppuccinPalette.mocha.swatches
         case .studio: [.init(red: 0.55, green: 0.78, blue: 0.69), .init(red: 0.81, green: 0.91, blue: 0.86), .white]
         case .ocean: [.blue.opacity(0.7), .cyan.opacity(0.4), .white]
         case .auto: [.purple.opacity(0.6), .purple.opacity(0.2), .white]
@@ -26,6 +32,17 @@ enum DiagramTheme: String, CaseIterable, Identifiable {
         case .dark: [.init(white: 0.2), .purple.opacity(0.5), .gray]
         }
     }
+
+    // Keep the original raw values, including "auto" (Mermaid), for existing preferences.
+    static func preference(_ value: String?) -> DiagramTheme {
+        value.flatMap(Self.init(rawValue:)) ?? .system
+    }
+
+    func resolved(dark: Bool) -> DiagramTheme {
+        self == .system ? (dark ? .mocha : .latte) : self
+    }
+
+    var palette: CatppuccinPalette? { CatppuccinPalette(rawValue: rawValue) }
 }
 
 enum ExportFormat: String, CaseIterable, Identifiable {
@@ -36,11 +53,18 @@ enum ExportFormat: String, CaseIterable, Identifiable {
 }
 
 struct RenderOptions: Equatable {
-    var theme: String = "studio"
+    var theme: String = "system"
     var dark = false
     var grid = true
     var curve = "basis"
-    var dictionary: [String: Any] { ["theme": theme, "dark": dark, "grid": grid, "curve": curve] }
+    var resolvedTheme: DiagramTheme { DiagramTheme.preference(theme).resolved(dark: dark) }
+    var palette: CatppuccinPalette? { resolvedTheme.palette }
+    var isDark: Bool { palette?.isDark ?? (dark || resolvedTheme == .dark) }
+    var dictionary: [String: Any] {
+        var value: [String: Any] = ["theme": resolvedTheme.rawValue, "dark": isDark, "grid": grid, "curve": curve]
+        if let palette { value["palette"] = palette.colors }
+        return value
+    }
 }
 
 @MainActor

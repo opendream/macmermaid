@@ -9,7 +9,7 @@ struct WorkspaceView: View {
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("editorFontSize") private var fontSize = 14.0
     @AppStorage("lineWrap") private var lineWrap = true
-    @AppStorage("diagramTheme") private var theme = DiagramTheme.studio.rawValue
+    @AppStorage("diagramTheme") private var theme = DiagramTheme.system.rawValue
     @AppStorage("showGrid") private var showGrid = true
     @AppStorage("diagramCurve") private var curve = "basis"
     @State private var showTemplates = false
@@ -20,7 +20,7 @@ struct WorkspaceView: View {
     @State private var showErrorDetails = true
 
     private var options: RenderOptions {
-        RenderOptions(theme: theme, dark: colorScheme == .dark || theme == "dark", grid: showGrid, curve: curve)
+        RenderOptions(theme: theme, dark: colorScheme == .dark, grid: showGrid, curve: curve)
     }
 
     var body: some View {
@@ -34,7 +34,7 @@ struct WorkspaceView: View {
                 inspector.frame(width: 238)
             }
         }
-        .frame(minWidth: 820, minHeight: 540)
+        .frame(minWidth: showInspector ? 960 : 820, minHeight: 540)
         .tint(accent)
         .background(.background)
         .toolbar { toolbar }
@@ -67,7 +67,7 @@ struct WorkspaceView: View {
             }
             .padding(.horizontal, 18).frame(height: 46)
             Divider().opacity(0.5)
-            CodeEditor(text: $document.text, fontSize: fontSize, wraps: lineWrap, dark: colorScheme == .dark) { newLine, newColumn in
+            CodeEditor(text: $document.text, fontSize: fontSize, wraps: lineWrap, dark: options.palette?.isDark ?? (colorScheme == .dark), palette: options.palette) { newLine, newColumn in
                 // NSTextView selection notifications can arrive during a SwiftUI update.
                 DispatchQueue.main.async { line = newLine; column = newColumn }
             }
@@ -122,6 +122,7 @@ struct WorkspaceView: View {
             }
             .allowsHitTesting(true)
         }
+        .environment(\.colorScheme, options.isDark ? .dark : .light)
         .overlay {
             if session.isExporting {
                 ProgressView("Exporting…").padding(24).glassEffect(.regular, in: .rect(cornerRadius: 20))
@@ -173,12 +174,6 @@ struct WorkspaceView: View {
             Button { showEditor.toggle() } label: { Label("Toggle Editor", systemImage: "sidebar.left") }
                 .help("Toggle editor · ⌥⌘E")
         }
-        ToolbarItem(placement: .principal) {
-            HStack(spacing: 7) {
-                Image(systemName: "point.3.connected.trianglepath.dotted").foregroundStyle(accent)
-                Text("MacMermaid").font(.system(size: 13, weight: .semibold))
-            }
-        }
         ToolbarItemGroup(placement: .primaryAction) {
             Button { showTemplates = true } label: { Label("Templates", systemImage: "square.grid.2x2") }.help("New from template · ⇧⌘N")
             Button { showInspector.toggle() } label: { Label("Appearance", systemImage: "slider.horizontal.3") }.help("Diagram appearance · ⌥⌘I")
@@ -195,62 +190,93 @@ struct WorkspaceView: View {
     }
 
     private var inspector: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            HStack {
-                Text("Make it yours").font(.system(size: 14, weight: .semibold))
-                Spacer()
-                Button { showInspector = false } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .semibold)) }.buttonStyle(.plain).foregroundStyle(.secondary).help("Close appearance")
-            }
-            VStack(alignment: .leading, spacing: 12) {
-                inspectorLabel("DIAGRAM THEME")
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                    ForEach(DiagramTheme.allCases) { option in
-                        Button { theme = option.rawValue } label: {
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack(spacing: -3) {
-                                    ForEach(0..<3) { index in
-                                        RoundedRectangle(cornerRadius: 4).fill(option.colors[index])
-                                            .frame(width: 22, height: 22).overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(.primary.opacity(0.08)))
-                                    }
-                                }
-                                HStack {
-                                    Text(option.title).font(.system(size: 10, weight: .medium))
-                                    Spacer(minLength: 0)
-                                    if theme == option.rawValue { Image(systemName: "checkmark").font(.system(size: 9, weight: .bold)).foregroundStyle(accent) }
-                                }
-                            }.padding(10).frame(maxWidth: .infinity, alignment: .leading)
-                                .background(theme == option.rawValue ? accent.opacity(0.1) : Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
-                                .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(theme == option.rawValue ? accent.opacity(0.6) : .clear))
-                        }.buttonStyle(.plain)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 22) {
+                HStack {
+                    Text("Make it yours").font(.system(size: 14, weight: .semibold))
+                    Spacer()
+                    Button { showInspector = false } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .semibold)) }.buttonStyle(.plain).foregroundStyle(.secondary).help("Close appearance")
+                }
+                VStack(alignment: .leading, spacing: 12) {
+                    inspectorLabel("COLOR THEME")
+                    Button { theme = DiagramTheme.system.rawValue } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "circle.lefthalf.filled")
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Automatic").font(.system(size: 11, weight: .medium))
+                                Text("Latte / Mocha · Follows appearance")
+                                    .font(.system(size: 9)).foregroundStyle(.secondary)
+                            }
+                            Spacer(minLength: 0)
+                            if DiagramTheme.preference(theme) == .system {
+                                Image(systemName: "checkmark").font(.system(size: 9, weight: .bold)).foregroundStyle(accent)
+                            }
+                        }.padding(10).frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
+                            .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(DiagramTheme.preference(theme) == .system ? accent.opacity(0.6) : .clear))
+                    }.buttonStyle(.plain)
+                        .accessibilityLabel("Automatic Catppuccin theme")
+                        .accessibilityValue(DiagramTheme.preference(theme) == .system ? "Selected" : "Not selected")
+                    inspectorLabel("CATPPUCCIN · EDITOR + DIAGRAM")
+                    themeGrid([.latte, .mocha])
+                    inspectorLabel("OTHER DIAGRAM THEMES")
+                    themeGrid([.studio, .ocean, .auto, .forest, .neutral, .dark])
+                }
+                VStack(alignment: .leading, spacing: 12) {
+                    inspectorLabel("CONNECTIONS")
+                    Picker("Line style", selection: $curve) {
+                        Text("Smooth").tag("basis")
+                        Text("Straight").tag("linear")
+                        Text("Stepped").tag("stepAfter")
+                    }.labelsHidden().frame(maxWidth: .infinity)
+                    Text("Applies to flowchart connections.").font(.system(size: 10)).foregroundStyle(.tertiary)
+                }
+                Divider()
+                VStack(alignment: .leading, spacing: 12) {
+                    inspectorLabel("WORKSPACE")
+                    Toggle("Canvas grid", isOn: $showGrid).font(.system(size: 11)).toggleStyle(.switch).controlSize(.mini)
+                    Toggle("Wrap source lines", isOn: $lineWrap).font(.system(size: 11)).toggleStyle(.switch).controlSize(.mini)
+                    HStack {
+                        Text("Text size").font(.system(size: 11))
+                        Spacer()
+                        Stepper("\(Int(fontSize))", value: $fontSize, in: 11...22).font(.system(size: 11)).fixedSize()
                     }
                 }
-            }
-            VStack(alignment: .leading, spacing: 12) {
-                inspectorLabel("CONNECTIONS")
-                Picker("Line style", selection: $curve) {
-                    Text("Smooth").tag("basis")
-                    Text("Straight").tag("linear")
-                    Text("Stepped").tag("stepAfter")
-                }.labelsHidden().frame(maxWidth: .infinity)
-                Text("Applies to flowchart connections.").font(.system(size: 10)).foregroundStyle(.tertiary)
-            }
-            Divider()
-            VStack(alignment: .leading, spacing: 12) {
-                inspectorLabel("WORKSPACE")
-                Toggle("Canvas grid", isOn: $showGrid).font(.system(size: 11)).toggleStyle(.switch).controlSize(.mini)
-                Toggle("Wrap source lines", isOn: $lineWrap).font(.system(size: 11)).toggleStyle(.switch).controlSize(.mini)
-                HStack {
-                    Text("Text size").font(.system(size: 11))
-                    Spacer()
-                    Stepper("\(Int(fontSize))", value: $fontSize, in: 11...22).font(.system(size: 11)).fixedSize()
+                Spacer()
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("A space to think clearly.").font(.system(size: 11, weight: .medium, design: .rounded))
+                    Text("Mermaid 11.16.1 · Runs offline").font(.system(size: 9)).foregroundStyle(.tertiary)
                 }
+            }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
+        }.background(.bar)
+    }
+
+    private func themeGrid(_ themes: [DiagramTheme]) -> some View {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+            ForEach(themes) { option in
+                Button { theme = option.rawValue } label: {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: 4) {
+                            ForEach(0..<3) { index in
+                                RoundedRectangle(cornerRadius: 4).fill(option.colors[index])
+                                    .frame(width: 20, height: 20)
+                                    .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(.primary.opacity(0.12)))
+                            }
+                        }
+                        HStack(spacing: 4) {
+                            Text(option.title).font(.system(size: 10, weight: .medium)).lineLimit(1)
+                            Spacer(minLength: 0)
+                            Image(systemName: "checkmark").font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(accent).opacity(theme == option.rawValue ? 1 : 0)
+                        }
+                    }.padding(10).frame(maxWidth: .infinity, alignment: .leading)
+                        .background(theme == option.rawValue ? accent.opacity(0.1) : Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
+                        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(theme == option.rawValue ? accent.opacity(0.6) : .clear))
+                }.buttonStyle(.plain)
+                    .accessibilityLabel(option.palette == nil ? option.title : "Catppuccin \(option.title)")
+                    .accessibilityValue(theme == option.rawValue ? "Selected" : "Not selected")
             }
-            Spacer()
-            VStack(alignment: .leading, spacing: 6) {
-                Text("A space to think clearly.").font(.system(size: 11, weight: .medium, design: .rounded))
-                Text("Mermaid 11.16.1 · Runs offline").font(.system(size: 9)).foregroundStyle(.tertiary)
-            }
-        }.padding(20).frame(maxHeight: .infinity).background(.bar)
+        }
     }
 
     private func inspectorLabel(_ text: String) -> some View {
