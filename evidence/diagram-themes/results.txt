@@ -1,0 +1,36 @@
+PASS: bundled renderer starts offline
+PASS: A little clarity
+PASS: Flowchart
+PASS: Sequence
+PASS: Class diagram
+PASS: State machine
+PASS: Relationships
+PASS: Mind map
+PASS: Project plan
+PASS: Pie chart
+PASS: Git branches
+PASS: User journey
+PASS: Timeline
+PASS: theme Studio
+PASS: theme Ocean
+PASS: theme Mermaid
+PASS: theme Forest
+PASS: theme Mono
+PASS: theme Midnight
+PASS: theme Latte
+PASS: theme Mocha
+PASS: theme Tokyo Day
+PASS: theme Tokyo Night
+PASS: latte all templates and SVG/PNG/PDF palette fidelity
+PASS: mocha all templates and SVG/PNG/PDF palette fidelity
+PASS: tokyo-day all templates and SVG/PNG/PDF palette fidelity
+PASS: tokyo-night all templates and SVG/PNG/PDF palette fidelity
+PASS: syntax error preserves preview and disables export
+PASS: latest edit wins and recovers after error
+PASS: SVG export (106874 bytes)
+PASS: PNG export (81066 bytes)
+PASS: PDF export (46432 bytes)
+PASS: empty source clears preview
+PASS: native document open, edit, autosave, undo, and save
+PASS: independent editor/diagram themes, Settings appearance overrides, migration, saved choices, and layout snapshots
+SUCCESS
