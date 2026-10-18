@@ -4,8 +4,8 @@
 
 ## Current candidate
 
-Build/test inputs: [d0132d8](https://github.com/opendream/macmermaid/commit/d0132d81ac7625c39efd3d052fafe9645bcd1b64).
-Source-input SHA-256: `d4c8785050c43dd20715035f1e41a933d7ed9fd2bad7ce4c56e2be0972f3cfc7`.
+Build/test inputs: [5e3a661](https://github.com/opendream/macmermaid/commit/5e3a661469d1c86f32b91485f3a5de5c18f61d5f).
+Source-input SHA-256: `6816ffe6344aa9cae1b75e2300d4ed6033d851e48bbe53679c9755c4df46c004`.
 
 Mermaid 12.2.0 includes the [documented lane-spacing patch](../third-party/patches/README.md). Shipped renderer SHA-256: `2ef02743353d56e6e04accde7f1ee71061f1d08db83b9f092cd4ac1a42d457af`. YAML remains 2.9.1. The dependency inventory remains 97 notices; the patch adds no dependency and leaves ELK unchanged. Builds verify the patch against the exact original npm checksum.
 
@@ -13,15 +13,15 @@ The source manifest includes committed sources, tests, scripts, dependency recor
 
 ## Automated evidence
 
-- Local macOS 27.0.1 (26A434), arm64, Swift 6.4, Node 22.19.0: fresh evidence under `build/alpha-completion/d0132d8/`. Final run status is recorded in `smoke/results.txt`; an unfinished run is not a pass.
-- macOS 26.6.2 (25G83), arm64, Swift 6.3.3, Node 24.21.0: [matching CI run](https://github.com/opendream/macmermaid/actions/runs/39131704253). This tests the supported major version, not specifically 26.0. The workflow retains OS/toolchain details, input manifest, test/build logs, packaged results, exports and app archive.
+- Local macOS 27.0.1 (26A434), arm64, Swift 6.4, Node 22.19.0: fresh evidence under `build/alpha-completion/5e3a661/`. The final packaged suite completed with `SUCCESS`; `smoke/resource-bundle-path.txt` confirms resources came from the isolated app bundle.
+- macOS 26.6.2 (25G83), arm64, Swift 6.3.3, Node 24.21.0: [matching CI run](https://github.com/opendream/macmermaid/actions/runs/39132052176). This tests the supported major version, not specifically 26.0. The workflow retains OS/toolchain details, input manifest, test/build logs, packaged results, exports and app archive.
 - Unit coverage: 9 Swift tests, 12 JavaScript tests, and 9 Python release-check tests.
 - Packaged rendering: 15 templates × 11 themes, supported layout/look configurations, three distinct Dagre connection geometries, Default/Custom/source precedence, malformed frontmatter and recovery.
 - Exports: 105 existing SVG/PNG/PDF operations plus six swimlane-spacing SVG fixtures, with decoding, palette/background and geometry checks. Representative horizontal Redux Color and vertical Mocha/PDF swimlane exports were visually inspected after the patch.
 - Native document APIs: open, Unicode edit, autosave, appearance undo/redo, save/reopen and independent documents. These do not establish keyboard or gallery interaction.
 - Offline policy: local scripts and a CSP-blocked fetch; no claim that the network interface was disabled. The suite also asserts resources load from the packaged app, not a SwiftPM build-directory fallback.
 
-An earlier macOS 26 run exposed a packaging-check assumption: SwiftPM 6.3.3 emits a flat resource bundle, while the local 6.4 build uses `Contents/Resources`. The checker now accepts exactly one valid layout. Explicit Bash pipe failure handling also prevents `tee` from hiding a failed build. A subsequent [baseline run passed](https://github.com/opendream/macmermaid/actions/runs/39130950507); only the matching current run establishes the final candidate's result.
+An earlier macOS 26 run exposed a packaging-check assumption: SwiftPM 6.3.3 emits a flat resource bundle, while the local 6.4 build uses `Contents/Resources`. The checker now accepts exactly one valid layout. Explicit Bash pipe failure handling also prevents `tee` from hiding a failed build. A subsequent baseline run passed, but the new resource-isolation assertion then exposed a build-directory fallback in SwiftPM 6.3.3. The app now resolves its embedded resource bundle explicitly through `AppResources`; the assertion remains in the suite. Earlier runtime results do not establish portable packaging. Only the matching current run establishes this candidate's macOS 26 result.
 
 ## Regression results
 
@@ -40,7 +40,7 @@ A private 29-lane workflow was rechecked against the same renderer in commit 68c
 | [#12 Validation](https://github.com/opendream/macmermaid/issues/12) | Complete live UI/gallery evidence and confirm final matching local/CI runs; keep unfinished criteria unchecked. |
 | [#13 Documentation](https://github.com/opendream/macmermaid/issues/13) | Final screenshots and validation record after live verification, then documentation/link review. |
 
-Computer Use still reports `Sky Computer Use native pipe startup failed`. AppKit cached-view captures can omit the WebKit canvas or flatten materials, so they are not substituted for a live UI pass. The user is reconnecting Computer Use. Existing screenshots are historical until the current candidate is inspected.
+Computer Use still reports `Sky Computer Use native pipe startup failed`. AppKit cached-view captures can omit the WebKit canvas or flatten materials, so they are not substituted for a live UI pass. The user is reconnecting Computer Use. The [live UI checklist](validation/LIVE-UI-CHECKLIST.md) records the remaining actions. Existing screenshots are historical until the current candidate is inspected.
 
 ## Known limits and publication
 
