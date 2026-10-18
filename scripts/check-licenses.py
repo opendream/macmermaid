@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+from patch_mermaid import verify as verify_mermaid_patch
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -19,6 +20,8 @@ def check(app=None):
     renderer = manifest["bundle"]
     if sha256((ROOT / renderer["path"]).read_bytes()) != renderer["sha256"]:
         raise ValueError("Renderer changed: audit its dependencies and refresh third-party notices before packaging.")
+    if renderer.get("modifiedByMacMermaid"):
+        verify_mermaid_patch((ROOT / renderer["path"]).read_bytes())
     web_root = ROOT / "Sources/MacMermaid/Resources/Web"
     metadata = json.loads((web_root / "renderer.json").read_text())
     if (metadata["version"], metadata["sha256"]) != (renderer["version"], renderer["sha256"]):
@@ -54,7 +57,13 @@ def check(app=None):
         for name in ["LICENSE", "THIRD_PARTY_NOTICES.md", "third-party/manifest.json", "third-party/audit-v12.json"]:
             if (resources / name).read_bytes() != (ROOT / name).read_bytes():
                 raise ValueError(f"Packaged notice differs: {name}")
-        web = resources / "MacMermaid_MacMermaid.bundle/Contents/Resources/Web"
+        bundle = resources / "MacMermaid_MacMermaid.bundle"
+        # SwiftPM 6.2 emits flat resource bundles; newer toolchains use Contents.
+        candidates = [bundle / "Contents/Resources/Web", bundle / "Web"]
+        present = [path for path in candidates if path.is_dir()]
+        if len(present) != 1:
+            raise ValueError("Expected exactly one packaged Web resource directory.")
+        web = present[0]
         for name in ["mermaid.min.js", "yaml.min.js", "renderer.json", "palettes.json", "YAML-LICENSE", "MERMAID-LICENSE.txt", "CATPPUCCIN-LICENSE.txt", "TOKYO-NIGHT-LICENSE.txt"]:
             if (web / name).read_bytes() != (ROOT / "Sources/MacMermaid/Resources/Web" / name).read_bytes():
                 raise ValueError(f"Packaged renderer resource differs: {name}")

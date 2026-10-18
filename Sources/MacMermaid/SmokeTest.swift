@@ -35,6 +35,10 @@ enum SmokeTest {
             results.append("PASS: local resources, CSP-blocked network request, and six portable palettes in standalone Mermaid")
             try await checkConfiguration(session: session)
             results.append("PASS: native defaults, layouts, looks, curve geometry, scoped settings, malformed YAML, and recovery")
+            try await checkViewport(session: session, window: window)
+            results.append("PASS: very wide diagram fits below 5%, zoom stays continuous, and resizing refits")
+            try await checkSwimlaneSpacing(session: session, folder: folder)
+            results.append("PASS: empty lanes and long English/Thai headings, LR/TB and every look, preserve content without overlapping lanes")
 
             for template in DiagramTemplate.all {
                 for theme in DiagramTheme.allCases {
@@ -155,6 +159,103 @@ enum SmokeTest {
         }
         try? results.joined(separator: "\n").write(to: folder.appendingPathComponent("results.txt"), atomically: true, encoding: .utf8)
         NSApp.terminate(nil)
+    }
+
+    private static func checkSwimlaneSpacing(session: PreviewSession, folder: URL) async throws {
+        let lanes = """
+          subgraph empty_start ["Empty first lane"]
+          end
+          subgraph first ["A long department heading that needs enough room to remain readable beside the entire approval process"]
+            a[Start]
+            b{Approved?}
+          end
+          subgraph empty_middle ["Empty middle lane"]
+          end
+          subgraph second ["หน่วยงานทดสอบการจัดสรรงบประมาณและการอนุมัติรายการสำหรับตรวจสอบข้อความภาษาไทย"]
+            c[Finish]
+          end
+          subgraph empty_end ["Empty last lane"]
+          end
+          a --> b
+          b -->|Yes| c
+          c -->|Revise| a
+        """
+        for direction in ["LR", "TB"] {
+            for look in ["neo", "classic", "handDrawn"] {
+                let source = "---\nconfig:\n  look: \(look)\n---\nswimlane-beta \(direction)\n" + lanes
+                session.update(source: source, options: RenderOptions(), immediately: true)
+                try await wait { !session.isRendering }
+                guard session.canExport else { throw Failure(session.error ?? "Swimlane spacing fixture failed") }
+                let audit = try await session.webView.callAsyncJavaScript("""
+                    const svg = document.querySelector('#stage svg');
+                    const scale = new DOMMatrix(getComputedStyle(document.querySelector('#stage')).transform).a;
+                    const rect = e => {
+                      const r = e.getBoundingClientRect();
+                      return {x:r.x/scale,y:r.y/scale,w:r.width/scale,h:r.height/scale};
+                    };
+                    const lanes = [...svg.querySelectorAll('.cluster.swimlane')].map(e => ({
+                      id:e.id, text:e.textContent, title:rect(e.querySelector('.swimlane-title')),
+                      body:rect(e.querySelector('.swimlane-body')), label:rect(e.querySelector('.cluster-label'))
+                    }));
+                    const contains = (a,b) => a.x>=b.x-3 && a.y>=b.y-3 && a.x+a.w<=b.x+b.w+3 && a.y+a.h<=b.y+b.h+3;
+                    // Rough outlines intentionally wobble across a shared boundary.
+                    // Permit their combined stroke overshoot, not overlapping lane areas.
+                    const outlineTolerance = look === 'handDrawn' ? 8 : 1;
+                    const overlap = (a,b) => Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)>outlineTolerance &&
+                      Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)>outlineTolerance;
+                    const headersFit = lanes.every(l => contains(l.label,l.title));
+                    const lanesSeparate = lanes.every((a,i) => lanes.slice(i+1).every(b => !overlap(a.body,b.body)));
+                    const nodes = [...svg.querySelectorAll('.node,.rough-node')];
+                    const labels = [...svg.querySelectorAll('.edgeLabel')].map(e => e.textContent.trim()).filter(Boolean).sort();
+                    const content = nodes.length===3 && nodes.map(e=>e.textContent.trim()).sort().join('|')==='Approved?|Finish|Start' &&
+                      svg.querySelectorAll('.flowchart-link').length===3 && labels.join('|')==='Revise|Yes';
+                    return JSON.stringify({passed:lanes.length===5 && headersFit && lanesSeparate && content,
+                      headersFit,lanesSeparate,content,lanes});
+                    """, arguments: ["look": look], in: nil, contentWorld: .page) as? String ?? "{}"
+                try audit.write(to: folder.appendingPathComponent("swimlane-spacing-\(direction)-\(look).json"), atomically: true, encoding: .utf8)
+                try await session.exportData(.svg).write(to: folder.appendingPathComponent("swimlane-spacing-\(direction)-\(look).svg"))
+                let result = try JSONSerialization.jsonObject(with: Data(audit.utf8)) as? [String: Any]
+                guard result?["passed"] as? Bool == true else { throw Failure("Swimlane spacing failed for \(direction)/\(look); see geometry audit") }
+            }
+        }
+    }
+
+    private static func checkViewport(session: PreviewSession, window: NSWindow) async throws {
+        let source = "flowchart LR\n" + (0..<100).map { "step\($0)[Step \($0)]" }.joined(separator: " --> ")
+        window.setContentSize(NSSize(width: 400, height: 540))
+        defer { window.setContentSize(NSSize(width: 1000, height: 760)) }
+        session.update(source: source, options: RenderOptions(), immediately: true)
+        try await wait { !session.isRendering }
+        guard session.canExport else { throw Failure(session.error ?? "Wide diagram did not render") }
+        let result = try await session.webView.callAsyncJavaScript("""
+            // Reading layout works even when this test window is occluded;
+            // requestAnimationFrame can stay suspended in background WebKit.
+            window.macmermaid.fit();
+            const viewport = document.getElementById('viewport');
+            const stage = document.getElementById('stage');
+            const scale = () => new DOMMatrix(getComputedStyle(stage).transform).a;
+            const contained = () => {
+              const v = viewport.getBoundingClientRect(), s = stage.getBoundingClientRect();
+              return s.left >= v.left - 0.1 && s.right <= v.right + 0.1 &&
+                s.top >= v.top - 0.1 && s.bottom <= v.bottom + 0.1;
+            };
+            const fitted = scale();
+            if (!(fitted > 0 && fitted < 0.05 && contained())) return false;
+            window.macmermaid.zoom(1.2);
+            if (Math.abs(scale() / fitted - 1.2) > 0.0001) return false;
+            window.macmermaid.zoom(1 / 1.2);
+            return contained() && document.querySelectorAll('#stage .node').length === 100;
+            """, arguments: [:], in: nil, contentWorld: .page) as? Bool
+        guard result == true else { throw Failure("Wide-diagram Fit or zoom clips the diagram") }
+        window.setContentSize(NSSize(width: 1000, height: 760))
+        let resized = try await session.webView.callAsyncJavaScript("""
+            window.macmermaid.fit();
+            const v = document.getElementById('viewport').getBoundingClientRect();
+            const s = document.getElementById('stage').getBoundingClientRect();
+            return s.left >= v.left - 0.1 && s.right <= v.right + 0.1 &&
+              s.top >= v.top - 0.1 && s.bottom <= v.bottom + 0.1;
+            """, arguments: [:], in: nil, contentWorld: .page) as? Bool
+        guard resized == true else { throw Failure("Resized viewport clips a fitted diagram") }
     }
 
     private static func checkNativeDocument(in folder: URL) async throws {
@@ -337,6 +438,12 @@ enum SmokeTest {
     }
 
     private static func checkIsolationAndPortability(session: PreviewSession, folder: URL) async throws {
+        let appPath = Bundle.main.bundleURL.resolvingSymlinksInPath().path + "/"
+        let resourcePath = AppResources.bundle.bundleURL.resolvingSymlinksInPath().path
+        guard resourcePath.hasPrefix(appPath) else {
+            throw Failure("Packaged app loaded build-tree resources instead of its own bundle: \(resourcePath)")
+        }
+        try resourcePath.write(to: folder.appendingPathComponent("resource-bundle-path.txt"), atomically: true, encoding: .utf8)
         let isolated = try await session.webView.callAsyncJavaScript("""
             const local = [...document.scripts].every(s => s.src.startsWith('file:'));
             const blocked = new Promise(resolve => {
@@ -350,11 +457,11 @@ enum SmokeTest {
             """, arguments: [:], in: nil, contentWorld: .page) as? Bool
         guard isolated == true else { throw Failure("Local resource or offline CSP check failed") }
 
-        // A separate page has only the upstream renderer: no app bridge, palette table,
+        // A separate page has only the shipped Mermaid renderer: no app bridge, palette table,
         // YAML editor, or MacMermaid initialization defaults can affect this result.
         let directory = folder.appendingPathComponent("standalone", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        guard let bundle = Bundle.module.url(forResource: "mermaid.min", withExtension: "js", subdirectory: "Web") else {
+        guard let bundle = AppResources.bundle.url(forResource: "mermaid.min", withExtension: "js", subdirectory: "Web") else {
             throw Failure("Missing Mermaid bundle")
         }
         try Data(contentsOf: bundle).write(to: directory.appendingPathComponent("mermaid.min.js"))

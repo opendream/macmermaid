@@ -1,5 +1,6 @@
 {
   "version": "12.2.0",
-  "sha256": "a8a6a6f805b074a8261a2825c86f99c8054acb3b35f50bb7e24a4f9f2c3c3b9f",
-  "yamlVersion": "2.9.1"
+  "sha256": "2ef02743353d56e6e04accde7f1ee71061f1d08db83b9f092cd4ac1a42d457af",
+  "yamlVersion": "2.9.1",
+  "patch": "macmermaid-lane-spacing-1"
 }

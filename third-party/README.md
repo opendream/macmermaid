@@ -4,7 +4,7 @@
 license sources, and the full notice-text hashes in `THIRD_PARTY_NOTICES.md`.
 It covers Mermaid **12.2.0**, YAML **2.9.1**, and the palette adaptations.
 
-The renderer and its source map match the exact npm 12.2.0 distribution. The
+The upstream renderer and source map used for the audit match the exact npm 12.2.0 distribution. The
 main map has 1,242 inputs. All 32 embedded parser chunks match the parser 2.0.1
 package; their nested maps were inspected too. These maps identify 72 external
 package/version pairs. `audit-v12.json` records those pairs, downloaded archives,
@@ -24,7 +24,7 @@ ranges. Unchanged components retain the previous audit's license evidence,
 including any explicit limitations about later upstream license snapshots.
 DOMPurify uses its Apache-2.0 option. Chevrotain NOTICE and Microsoft third-party
 notices are retained. KaTeX's font-derived SVG geometry carries OFL-1.1 notices.
-The Mermaid distribution is unmodified.
+The Mermaid 12.2.0 distribution has a [reproducible lane-spacing patch](patches/README.md) for empty lanes and long headings. The dependency set is unchanged; the manifest records both upstream and shipped checksums. `scripts/patch_mermaid.py` reverses and reapplies the patch to verify exact provenance.
 
 ## Rebuilding the YAML bundle
 
