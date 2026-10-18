@@ -1,14 +1,17 @@
 # v0.2.0-alpha validation
 
-The optimized packaged test suite completed with `SUCCESS` on 18 October 2026.
-The alpha is released with incomplete interactive UI validation: implementation
-and automated checks do not establish that every milestone acceptance criterion
-has passed. Issues #10, #11, and #12 retain the outstanding checks below.
+**Release held in draft.** The premature publication was withdrawn on 18 October
+2026. All milestone issues and required checks must be completed before publishing
+again. The following record describes the previous candidate, not a release pass
+for subsequent fixes. Issues #10, #11, #12 and #13 remain subject to final validation.
+
+The previous optimized packaged test suite completed with `SUCCESS` on 18 October
+2026. That automated result did not establish complete interactive UI validation.
 
 Tested implementation: [48c8706](https://github.com/opendream/macmermaid/commit/48c8706b4ae6c7cc883c8b8ebdd2f31a58c109b6).
 Subsequent release documentation changes do not alter these compiled inputs.
-The [release](https://github.com/opendream/macmermaid/releases/tag/v0.2.0-alpha)
-includes the app archive, checksums, and a validation evidence archive.
+The withdrawn release's artifacts and tag are retained for traceability. The user
+approved reusing v0.2.0-alpha and replacing its tag only after final validation.
 
 ## Environment and reproducibility
 

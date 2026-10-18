@@ -35,6 +35,8 @@ enum SmokeTest {
             results.append("PASS: local resources, CSP-blocked network request, and six portable palettes in standalone Mermaid")
             try await checkConfiguration(session: session)
             results.append("PASS: native defaults, layouts, looks, curve geometry, scoped settings, malformed YAML, and recovery")
+            try await checkViewport(session: session, window: window)
+            results.append("PASS: very wide diagram fits below 5%, zoom stays continuous, and resizing refits")
 
             for template in DiagramTemplate.all {
                 for theme in DiagramTheme.allCases {
@@ -155,6 +157,44 @@ enum SmokeTest {
         }
         try? results.joined(separator: "\n").write(to: folder.appendingPathComponent("results.txt"), atomically: true, encoding: .utf8)
         NSApp.terminate(nil)
+    }
+
+    private static func checkViewport(session: PreviewSession, window: NSWindow) async throws {
+        let source = "flowchart LR\n" + (0..<100).map { "step\($0)[Step \($0)]" }.joined(separator: " --> ")
+        window.setContentSize(NSSize(width: 400, height: 540))
+        defer { window.setContentSize(NSSize(width: 1000, height: 760)) }
+        session.update(source: source, options: RenderOptions(), immediately: true)
+        try await wait { !session.isRendering }
+        guard session.canExport else { throw Failure(session.error ?? "Wide diagram did not render") }
+        let result = try await session.webView.callAsyncJavaScript("""
+            await new Promise(requestAnimationFrame);
+            window.macmermaid.fit();
+            const viewport = document.getElementById('viewport');
+            const stage = document.getElementById('stage');
+            const scale = () => new DOMMatrix(getComputedStyle(stage).transform).a;
+            const contained = () => {
+              const v = viewport.getBoundingClientRect(), s = stage.getBoundingClientRect();
+              return s.left >= v.left - 0.1 && s.right <= v.right + 0.1 &&
+                s.top >= v.top - 0.1 && s.bottom <= v.bottom + 0.1;
+            };
+            const fitted = scale();
+            if (!(fitted > 0 && fitted < 0.05 && contained())) return false;
+            window.macmermaid.zoom(1.2);
+            if (Math.abs(scale() / fitted - 1.2) > 0.0001) return false;
+            window.macmermaid.zoom(1 / 1.2);
+            return contained() && document.querySelectorAll('#stage .node').length === 100;
+            """, arguments: [:], in: nil, contentWorld: .page) as? Bool
+        guard result == true else { throw Failure("Wide-diagram Fit or zoom clips the diagram") }
+        window.setContentSize(NSSize(width: 1000, height: 760))
+        let resized = try await session.webView.callAsyncJavaScript("""
+            await new Promise(requestAnimationFrame);
+            window.macmermaid.fit();
+            const v = document.getElementById('viewport').getBoundingClientRect();
+            const s = document.getElementById('stage').getBoundingClientRect();
+            return s.left >= v.left - 0.1 && s.right <= v.right + 0.1 &&
+              s.top >= v.top - 0.1 && s.bottom <= v.bottom + 0.1;
+            """, arguments: [:], in: nil, contentWorld: .page) as? Bool
+        guard resized == true else { throw Failure("Resized viewport clips a fitted diagram") }
     }
 
     private static func checkNativeDocument(in folder: URL) async throws {

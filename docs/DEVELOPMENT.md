@@ -126,7 +126,7 @@ python3 scripts/check-licenses.py --app build/MacMermaid.app
 
 The build runs these checks before compilation and after packaging. They verify the renderer/YAML checksums, central version metadata, source-map package coverage, notice inventory, and packaged files. Updating a checksum alone is not a dependency license audit.
 
-Local builds use ad hoc signing. The [v0.2.0-alpha release](https://github.com/opendream/macmermaid/releases/tag/v0.2.0-alpha) provides an Apple Silicon ZIP built this way. It is not Developer ID signed or notarized; the build script does not perform those distribution steps. macOS 26 remains the deployment target, but this alpha was runtime-tested on macOS 27.0.1.
+Local builds use ad hoc signing. The v0.2.0-alpha release is held in draft until all milestone issues and required checks pass. Its intended Apple Silicon ZIP uses ad hoc signing, not Developer ID signing or notarization; the build script does not perform those distribution steps. macOS 26 remains the deployment target. The prior candidate was runtime-tested on macOS 27.0.1; final evidence must include the supported macOS 26 runtime.
 
 The icon generator uses a neutral connected-node design. The build regenerates the ICNS when either icon script changes, rather than retaining a stale cached icon.
 

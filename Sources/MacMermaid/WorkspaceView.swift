@@ -148,12 +148,12 @@ struct WorkspaceView: View {
 
     private var zoomControls: some View {
         HStack(spacing: 1) {
-            Button { session.zoom(by: 1 / 1.2) } label: { Image(systemName: "minus").frame(width: 30, height: 30) }.help("Zoom out · ⌘−")
-            Text("\(Int(session.scale * 100))%")
-                .font(.system(size: 11, weight: .medium, design: .monospaced)).frame(width: 46)
-            Button { session.zoom(by: 1.2) } label: { Image(systemName: "plus").frame(width: 30, height: 30) }.help("Zoom in · ⌘+")
+            Button { session.zoom(by: 1 / 1.2) } label: { Image(systemName: "minus").frame(width: 30, height: 30) }.help("Zoom out · ⌘−").accessibilityLabel("Zoom out")
+            Text(session.scale >= 0.01 ? "\(Int(session.scale * 100))%" : String(format: "%.2g%%", session.scale * 100))
+                .font(.system(size: 11, weight: .medium, design: .monospaced)).frame(minWidth: 46)
+            Button { session.zoom(by: 1.2) } label: { Image(systemName: "plus").frame(width: 30, height: 30) }.help("Zoom in · ⌘+").accessibilityLabel("Zoom in")
             Divider().frame(height: 16).padding(.horizontal, 5)
-            Button { session.fit() } label: { Image(systemName: "arrow.up.left.and.arrow.down.right").frame(width: 30, height: 30) }.help("Fit diagram · ⌘0")
+            Button { session.fit() } label: { Image(systemName: "arrow.up.left.and.arrow.down.right").frame(width: 30, height: 30) }.help("Fit diagram · ⌘0").accessibilityLabel("Fit diagram")
         }.buttonStyle(.plain).foregroundStyle(.primary).padding(4).glassEffect(.regular, in: .capsule)
     }
 
@@ -200,7 +200,7 @@ struct WorkspaceView: View {
                 HStack {
                     Text("Make it yours").font(.system(size: 14, weight: .semibold))
                     Spacer()
-                    Button { showInspector = false } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .semibold)) }.buttonStyle(.plain).foregroundStyle(.secondary).help("Close appearance")
+                    Button { showInspector = false } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .semibold)) }.buttonStyle(.plain).foregroundStyle(.secondary).help("Close appearance").accessibilityLabel("Close appearance inspector")
                 }
                 VStack(alignment: .leading, spacing: 12) {
                     inspectorLabel("DIAGRAM THEME")
@@ -212,6 +212,7 @@ struct WorkspaceView: View {
                         Button("Use default") { changeAppearance("theme", to: "default") }
                             .controlSize(.small)
                             .help("Use the default Redux Color theme")
+                            .accessibilityLabel("Use default diagram theme")
                     }
                 }.disabled(!canEditAppearance)
                 if let appearance = session.appearance {
@@ -241,6 +242,7 @@ struct WorkspaceView: View {
                         Text("Text size").font(.system(size: 11))
                         Spacer()
                         Stepper("\(Int(fontSize))", value: $fontSize, in: 11...22).font(.system(size: 11)).fixedSize()
+                            .accessibilityLabel("Source text size").accessibilityValue("\(Int(fontSize)) points")
                     }
                 }
                 Spacer()
@@ -358,6 +360,7 @@ struct WorkspaceView: View {
                 Button("Use default") { changeAppearance("look", to: "default") }
                     .controlSize(.small)
                     .help("Use this diagram type’s default look")
+                    .accessibilityLabel("Use default diagram look")
             }
         }.disabled(!canEditAppearance)
     }

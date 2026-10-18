@@ -15,16 +15,16 @@
     post({type: 'zoom', scale});
   }
   function fit() {
-    if (!width || !height) return;
-    const w = viewport.clientWidth, h = viewport.clientHeight;
-    scale = Math.max(0.05, Math.min((w - 100) / width, (h - 140) / height, 1.4));
-    x = (w - width * scale) / 2;
-    y = (h - height * scale) / 2 - 10;
+    const fitted = MacMermaidViewport.fit(width, height, viewport.clientWidth, viewport.clientHeight);
+    if (!fitted) return;
+    ({scale, x, y} = fitted);
     fitting = true;
     transform();
   }
   function zoom(factor, cx = viewport.clientWidth / 2, cy = viewport.clientHeight / 2) {
-    const next = Math.max(0.05, Math.min(8, scale * factor));
+    const fitted = MacMermaidViewport.fit(width, height, viewport.clientWidth, viewport.clientHeight);
+    const minimum = Math.min(0.05, fitted?.scale ?? 0.05);
+    const next = Math.max(minimum, Math.min(8, scale * factor));
     x = cx - (cx - x) * next / scale;
     y = cy - (cy - y) * next / scale;
     scale = next;

@@ -8,7 +8,7 @@ Write diagram source, see the result as you type, and export it as SVG, PNG, or 
 
 *Light app appearance with the Mermaid 12 defaults.*
 
-**Status:** [v0.2.0-alpha prerelease](https://github.com/opendream/macmermaid/releases/tag/v0.2.0-alpha). This alpha includes known rendering limitations and incomplete interactive UI validation; see the [validation record](docs/VALIDATION-v0.2.0-alpha.md).
+**Status:** v0.2.0-alpha is held in draft until every milestone issue and required validation check is complete. The premature download was withdrawn. Build from source while the [remaining milestone work](https://github.com/opendream/macmermaid/milestone/1) is completed; see the [validation record](docs/VALIDATION-v0.2.0-alpha.md).
 
 ## Features
 
@@ -25,7 +25,7 @@ Write diagram source, see the result as you type, and export it as SVG, PNG, or 
 
 ### Download
 
-The [alpha release](https://github.com/opendream/macmermaid/releases/tag/v0.2.0-alpha) includes `MacMermaid-v0.2.0-alpha-macos-arm64.zip` for **Apple Silicon Macs running macOS 26 or later**, plus checksums and validation evidence. Extract the archive and move `MacMermaid.app` to Applications.
+There is currently no approved binary download. The v0.2.0-alpha release is a draft while validation and fixes are completed. The intended package is `MacMermaid-v0.2.0-alpha-macos-arm64.zip` for **Apple Silicon Macs running macOS 26 or later**, with checksums and validation evidence.
 
 This build is ad hoc signed, **not Developer ID signed or notarized**. macOS may block its first launch. Build from source if you prefer a local build; no Intel binary is provided in this alpha. Runtime validation was performed on macOS 27.0.1, not macOS 26.
 
