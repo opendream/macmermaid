@@ -3254,7 +3254,7 @@ License: **EPL-2.0**. Source: https://www.npmjs.com/package/elkjs/v/0.9.3
 
 Version identified in the matching source maps; license copied from the exact npm archive. Archive checksums are recorded in third-party/audit-v12.json.
 
-Unmodified ELK code inside the unmodified Mermaid bundle. Source and build instructions: https://github.com/kieler/elkjs/tree/0.9.3 and https://github.com/eclipse/elk. Embedded runtime notices follow separately.
+Unmodified ELK code inside the Mermaid bundle. MacMermaid applies a lane-spacing patch to Mermaid; ELK is unchanged. Source and build instructions: https://github.com/kieler/elkjs/tree/0.9.3 and https://github.com/eclipse/elk. Embedded runtime notices follow separately.
 
 ```text
 # Eclipse Public License - v 2.0

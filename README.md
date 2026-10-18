@@ -64,8 +64,8 @@ See the [user guide](docs/USAGE.md) for shortcuts, canvas controls, themes, and 
 - Rendering uses the bundled **Mermaid 12.2.0** engine; syntax support follows that version.
 - Remote images, clickable diagram links, and remotely loaded icon packs are disabled.
 - Exports are available only when the current source renders successfully.
-- Large swimlanes can be slow, produce malformed empty lanes, or overlap long lane headings. Return arrows directly into swimlane decision diamonds can detach; the supplied templates avoid that pattern.
-- Fit currently has a 5% minimum zoom, which can clip very wide diagrams in a narrow preview. SVG export retains the full diagram.
+- Large swimlanes can be slow. The bundled renderer includes a documented fix for empty lanes and long headings. Return arrows directly into swimlane decision diamonds can still detach; the supplied templates avoid that pattern.
+- Fit scales the entire diagram into the available preview, including below 5% zoom. Large diagrams still require zooming and panning to read individual labels.
 - Look cards use fixed sample illustrations, not miniature renders of the current document.
 
 ## Help and contributions
