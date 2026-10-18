@@ -167,7 +167,8 @@ enum SmokeTest {
         try await wait { !session.isRendering }
         guard session.canExport else { throw Failure(session.error ?? "Wide diagram did not render") }
         let result = try await session.webView.callAsyncJavaScript("""
-            await new Promise(requestAnimationFrame);
+            // Reading layout works even when this test window is occluded;
+            // requestAnimationFrame can stay suspended in background WebKit.
             window.macmermaid.fit();
             const viewport = document.getElementById('viewport');
             const stage = document.getElementById('stage');
@@ -187,7 +188,6 @@ enum SmokeTest {
         guard result == true else { throw Failure("Wide-diagram Fit or zoom clips the diagram") }
         window.setContentSize(NSSize(width: 1000, height: 760))
         let resized = try await session.webView.callAsyncJavaScript("""
-            await new Promise(requestAnimationFrame);
             window.macmermaid.fit();
             const v = document.getElementById('viewport').getBoundingClientRect();
             const s = document.getElementById('stage').getBoundingClientRect();
