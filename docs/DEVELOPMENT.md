@@ -45,6 +45,7 @@ Build outputs go into `.build/` and `build/`, both ignored by Git. Once developm
 | `Sources/MacMermaid/MermaidDocument.swift` | UTF-8 document loading and saving |
 | `Sources/MacMermaid/PreviewSession.swift` | WebKit bridge, rendering state, and exports |
 | `Sources/MacMermaid/DiagramPalette.swift` | Swift access to shared palette tokens |
+| `Sources/MacMermaid/LookPreview.swift` | Fixed sample illustrations for the look selector |
 | `Sources/MacMermaid/RendererMetadata.swift` | Shared renderer version metadata |
 | `Sources/MacMermaid/Resources/Web/appearance.js` | Comment-preserving YAML edits and inspector state |
 | `Sources/MacMermaid/Resources/Web/palettes.json` | Shared portable palette tokens |
@@ -91,7 +92,7 @@ A final `SUCCESS` line confirms completion. Check that the file belongs to the r
 
 The suite exercises every template/theme combination, supported layouts and looks, actual Dagre curve geometry, error recovery, rapid edits, and SVG/PNG/PDF exports. It checks project-plan date-label spacing and mind-map branch colors, and saves PDF thumbnails for visual review. A separate page containing only Mermaid verifies the six custom palettes without app helpers. A blocked fetch and local script URLs check the preview's offline policy.
 
-Native documents cover Unicode editing, autosave, appearance undo/redo, manual frontmatter edits, save/reopen, and independent choices in two documents. The explicit smoke run starts its documents with the real inspector visible; external native UI inspection separately checks opening it and interacting with controls. Appearance checks cover System/Light/Dark settings and keep editor appearance independent of diagram palettes. The test changes its own app appearance, not macOS appearance settings.
+Native documents cover Unicode editing, autosave, appearance undo/redo, manual frontmatter edits, save/reopen, and independent choices in two documents. These checks address document/editor APIs directly and do not require foreground keyboard focus. The explicit smoke run starts its documents with the real inspector visible; separately inspect opening it, interacting with controls, keyboard operation, and accessibility. Appearance assertions cover System/Light/Dark settings and keep editor appearance independent of diagram palettes. The test changes its own app appearance, not macOS appearance settings.
 
 Use a fresh output directory to keep evidence from different builds separate:
 
@@ -108,7 +109,7 @@ bundle avoids affecting the main app's preferences.
 
 Inspect the native app in light and dark appearances at a normal window size and at the minimum size. The smoke suite captures 1260×820 workspaces and inspector-visible 960×540 workspaces; the minimum width with the inspector closed is 820.
 
-Smoke snapshots use AppKit view caching, which can flatten Liquid Glass materials. They are useful layout evidence, but do not replace inspecting the live window and exported files.
+Smoke snapshots use AppKit view caching, which can flatten Liquid Glass materials or omit WebKit canvas contents. They are limited layout evidence and do not establish live-window usability or accessibility. Inspect the live window and exported files separately; record any checks that could not be completed.
 
 The [README image](images/macmermaid.png) is an unedited light-appearance workspace snapshot with Redux Color and native ELK/Neo defaults from the packaged smoke suite. When updating documentation images, use a real app capture with a sample diagram and no private information.
 
@@ -125,7 +126,9 @@ python3 scripts/check-licenses.py --app build/MacMermaid.app
 
 The build runs these checks before compilation and after packaging. They verify the renderer/YAML checksums, central version metadata, source-map package coverage, notice inventory, and packaged files. Updating a checksum alone is not a dependency license audit.
 
-Local builds use ad hoc signing. Developer ID signing and notarization are separate steps for distributing a notarized app to other Macs; the build script does not perform them. There are currently no prebuilt GitHub releases.
+Local builds use ad hoc signing. The [v0.2.0-alpha release](https://github.com/opendream/macmermaid/releases/tag/v0.2.0-alpha) provides an Apple Silicon ZIP built this way. It is not Developer ID signed or notarized; the build script does not perform those distribution steps. macOS 26 remains the deployment target, but this alpha was runtime-tested on macOS 27.0.1.
+
+The icon generator uses a neutral connected-node design. The build regenerates the ICNS when either icon script changes, rather than retaining a stale cached icon.
 
 ## References
 
