@@ -2,6 +2,9 @@
 
 The final optimized packaged run completed with `SUCCESS`. This record covers the six implementation issues in [milestone v0.2.0-alpha](https://github.com/opendream/macmermaid/milestone/1).
 
+Tested implementation: [59c9b5e](https://github.com/opendream/macmermaid/commit/59c9b5e4107230577fd2edc588e591c61bed3833).
+The committed implementation files match the input hashes from the passing run.
+
 ## Environment and reproducibility
 
 Checked on 18 October 2026 using arm64 macOS 27.0.1 (26A434), Swift 6.4,
