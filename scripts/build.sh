@@ -18,7 +18,7 @@ cp LICENSE THIRD_PARTY_NOTICES.md "$app/Contents/Resources/"
 mkdir -p "$app/Contents/Resources/third-party"
 cp third-party/manifest.json third-party/audit-v12.json "$app/Contents/Resources/third-party/"
 ditto "$binary_dir/MacMermaid_MacMermaid.bundle" "$app/Contents/Resources/MacMermaid_MacMermaid.bundle"
-if [ ! -f build/AppIcon.icns ]; then
+if [ ! -f build/AppIcon.icns ] || [ scripts/icon.swift -nt build/AppIcon.icns ] || [ scripts/package-icon.py -nt build/AppIcon.icns ]; then
   mkdir -p build/AppIcon.iconset
   swift -module-cache-path "$CLANG_MODULE_CACHE_PATH" scripts/icon.swift "$PWD/build/AppIcon.iconset"
   python3 scripts/package-icon.py

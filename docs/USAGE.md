@@ -23,6 +23,8 @@ When the source has a syntax error, the last valid preview stays visible. Export
 
 **MacMermaid → Settings → Appearance** controls the app and source editor. **System** follows macOS; **Light** and **Dark** override it. The editor keeps its standard syntax colors in each appearance.
 
+App controls and selection highlights use your macOS accent color. Decorative icons use neutral SF Symbols, and the app icon has a silver-and-charcoal connected-node design. The diagram's theme remains a separate document choice.
+
 The toolbar's appearance inspector edits the current document. New documents use **Redux Color**, with **Neo** and **ELK** where the diagram type supports them. Swimlanes keep their dedicated layout, and mind maps retain their native layout. Mermaid 12's layout and appearance changes are intentional.
 
 | Theme | Palette |
@@ -39,9 +41,11 @@ The toolbar's appearance inspector edits the current document. New documents use
 | Tokyo Day | Tokyo Night's Day palette |
 | Tokyo Night | Tokyo Night's Night palette |
 
-Choose a theme from the menu, or expand **Theme previews** to see the color cards. Explicit theme choices are fixed independently of the app's light/dark appearance. They do not recolor the editor, toolbar, or inspector.
+Choose a color card in **Theme previews**. The section starts expanded and can be collapsed. Explicit theme choices are fixed independently of the app's light/dark appearance. They do not recolor the editor, toolbar, or inspector.
 
-**Layout** offers ELK and Dagre for supported graph diagrams. **Look** offers the styles the diagram supports: Neo, Classic, and Hand-drawn. **Connections** appears for flowcharts using Dagre, where Smooth, Straight, and Stepped change the actual paths. It is hidden for ELK and swimlanes.
+**Look** follows the theme section. Its collapsible **Look previews** show the same small sample illustration in each supported drawing style: Neo, Classic, and Hand-drawn. Select a card to apply that look; the highlighted card reflects the active style, including the default. The samples illustrate the style independently of your diagram's colors and layout. **Use default** clears an explicit theme or look choice.
+
+**Layout** follows Look and offers ELK and Dagre for supported graph diagrams. **Connections** appears for flowcharts using Dagre, where Smooth, Straight, and Stepped change the actual paths. It is hidden for ELK and swimlanes.
 
 Mind maps keep their native layout because an explicit ELK override fails in the bundled 12.2.0 engine. Swimlanes also keep their dedicated layout. Their supported look choices remain available.
 
