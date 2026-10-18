@@ -62,6 +62,8 @@ Diagram settings come from the document source. Inspector actions use the YAML A
 
 `renderer.json` is the central renderer version/checksum source. Palette tokens live in `palettes.json`, shared by Swift swatches and portable YAML generation. The app does not make global layout/look overrides or restore v11 geometry. Mermaid's native HTML label mode is retained because forcing SVG text labels misaligns use-case labels in this version; exported images are checked in WebKit.
 
+The bundled 12.2.0 renderer includes a [reproducible lane-spacing patch](../third-party/patches/README.md) for empty lanes and long headings. Its shipped checksum differs from the original npm bundle; the original dependency audit and notices still apply. License checks reverse and reproduce the patch from the audited upstream checksum.
+
 To rebuild the YAML bundle, follow [the dependency instructions](../third-party/README.md#rebuilding-the-yaml-bundle). This is a development operation; ordinary app builds use the checked-in assets.
 
 ## Unit tests
@@ -71,6 +73,8 @@ To rebuild the YAML bundle, follow [the dependency instructions](../third-party/
 ```
 
 Tests cover UTF-8 decoding, Unicode highlighting, metadata, shared palette tokens, comment-preserving YAML updates, scoped configuration precedence, malformed YAML, Default removal, and Custom states. JavaScript tests exercise the actual bundled YAML parser without npm installation.
+
+Viewport tests cover Fit below 5% and narrow windows. Python release checks reject unfinished issues, missing live UI evidence, stale inputs, failed CI and mismatched assets. The packaged suite verifies real WebKit lane geometry in LR/TB with all three looks and ensures the app loads resources from its own bundle. Both flat SwiftPM resource bundles and newer `Contents/Resources` bundles are verified during packaging.
 
 ## Packaged smoke test
 
@@ -129,6 +133,8 @@ The build runs these checks before compilation and after packaging. They verify 
 Local builds use ad hoc signing. The v0.2.0-alpha release is held in draft until all milestone issues and required checks pass. Its intended Apple Silicon ZIP uses ad hoc signing, not Developer ID signing or notarization; the build script does not perform those distribution steps. macOS 26 remains the deployment target. The prior candidate was runtime-tested on macOS 27.0.1; final evidence must include the supported macOS 26 runtime.
 
 The icon generator uses a neutral connected-node design. The build regenerates the ICNS when either icon script changes, rather than retaining a stale cached icon.
+
+Follow [the release completion procedure](RELEASING.md) for required evidence, tag replacement, asset verification, and guarded publication.
 
 ## References
 

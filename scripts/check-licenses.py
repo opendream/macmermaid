@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+from patch_mermaid import verify as verify_mermaid_patch
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -19,6 +20,8 @@ def check(app=None):
     renderer = manifest["bundle"]
     if sha256((ROOT / renderer["path"]).read_bytes()) != renderer["sha256"]:
         raise ValueError("Renderer changed: audit its dependencies and refresh third-party notices before packaging.")
+    if renderer.get("modifiedByMacMermaid"):
+        verify_mermaid_patch((ROOT / renderer["path"]).read_bytes())
     web_root = ROOT / "Sources/MacMermaid/Resources/Web"
     metadata = json.loads((web_root / "renderer.json").read_text())
     if (metadata["version"], metadata["sha256"]) != (renderer["version"], renderer["sha256"]):

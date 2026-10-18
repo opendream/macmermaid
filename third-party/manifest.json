@@ -4,9 +4,11 @@
   "bundle": {
     "path": "Sources/MacMermaid/Resources/Web/mermaid.min.js",
     "version": "12.2.0",
-    "sha256": "a8a6a6f805b074a8261a2825c86f99c8054acb3b35f50bb7e24a4f9f2c3c3b9f",
+    "sha256": "2ef02743353d56e6e04accde7f1ee71061f1d08db83b9f092cd4ac1a42d457af",
     "distribution": "https://www.npmjs.com/package/mermaid/v/12.2.0",
-    "modifiedByMacMermaid": false
+    "modifiedByMacMermaid": true,
+    "upstreamSHA256": "a8a6a6f805b074a8261a2825c86f99c8054acb3b35f50bb7e24a4f9f2c3c3b9f",
+    "patch": "third-party/patches/README.md"
   },
   "sourceMaps": [
     {
