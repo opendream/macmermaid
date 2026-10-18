@@ -1,121 +1,54 @@
 # v0.2.0-alpha validation
 
-**Release held in draft.** The premature publication was withdrawn on 18 October
-2026. All milestone issues and required checks must be completed before publishing
-again. The following record describes the previous candidate, not a release pass
-for subsequent fixes. Issues #10, #11, #12 and #13 remain subject to final validation.
+**Release held in draft.** Issues #10–#13 remain open until live UI requirements and final documentation are complete. The old tag and assets are retained; the user authorized replacing the tag only after validation. The [withdrawn candidate record](validation/WITHDRAWN-v0.2.0-alpha.md) is historical evidence, not approval of this candidate.
 
-The previous optimized packaged test suite completed with `SUCCESS` on 18 October
-2026. That automated result did not establish complete interactive UI validation.
+## Current candidate
 
-Tested implementation: [48c8706](https://github.com/opendream/macmermaid/commit/48c8706b4ae6c7cc883c8b8ebdd2f31a58c109b6).
-Subsequent release documentation changes do not alter these compiled inputs.
-The withdrawn release's artifacts and tag are retained for traceability. The user
-approved reusing v0.2.0-alpha and replacing its tag only after final validation.
+Build/test inputs: [d0132d8](https://github.com/opendream/macmermaid/commit/d0132d81ac7625c39efd3d052fafe9645bcd1b64).
+Source-input SHA-256: `d4c8785050c43dd20715035f1e41a933d7ed9fd2bad7ce4c56e2be0972f3cfc7`.
 
-## Environment and reproducibility
+Mermaid 12.2.0 includes the [documented lane-spacing patch](../third-party/patches/README.md). Shipped renderer SHA-256: `2ef02743353d56e6e04accde7f1ee71061f1d08db83b9f092cd4ac1a42d457af`. YAML remains 2.9.1. The dependency inventory remains 97 notices; the patch adds no dependency and leaves ELK unchanged. Builds verify the patch against the exact original npm checksum.
 
-- Apple Silicon, arm64 macOS 27.0.1 (26A434), Swift 6.4, Node.js 22.19.0.
-- Deployment target: macOS 26. No macOS 26 runtime or Intel runtime was tested.
-- Mermaid 12.2.0, artifact SHA-256:
-  `a8a6a6f805b074a8261a2825c86f99c8054acb3b35f50bb7e24a4f9f2c3c3b9f`.
-- YAML 2.9.1, vendored locally with its pinned build inputs and audit metadata.
-- Source-input SHA-256:
-  `842e61e8a72e37d1fa8f1d7134b113f2be9281ce395291385bfdc554b7687713`.
-- Packaged release executable SHA-256:
-  `e693ddaffbbe5843ec894185f92dbd13a5411123b7631a033d05e2f3d2d5993b`.
+The source manifest includes committed sources, tests, scripts, dependency records, and CI configuration. Documentation-only commits outside those paths can share evidence if the manifest is identical. `scripts/release_inputs.py` records the complete file list.
 
-The source digest hashes sorted `path + NUL + file-SHA256 + newline` records for
-`Package.swift`, `Info.plist`, `THIRD_PARTY_NOTICES.md`, and files under `Sources`,
-`Tests`, `scripts` (excluding `node_modules`), and `third-party`. The evidence
-archive contains the complete input manifest. The isolated smoke app is copied
-from the release app, given a separate identifier and preferences, and re-signed;
-its signature therefore differs from the downloadable app.
+## Automated evidence
 
-Fresh local evidence is under `build/release-v0.2.0-alpha/`:
+- Local macOS 27.0.1 (26A434), arm64, Swift 6.4, Node 22.19.0: fresh evidence under `build/alpha-completion/d0132d8/`. Final run status is recorded in `smoke/results.txt`; an unfinished run is not a pass.
+- macOS 26.6.2 (25G83), arm64, Swift 6.3.3, Node 24.21.0: [matching CI run](https://github.com/opendream/macmermaid/actions/runs/39131704253). This tests the supported major version, not specifically 26.0. The workflow retains OS/toolchain details, input manifest, test/build logs, packaged results, exports and app archive.
+- Unit coverage: 9 Swift tests, 12 JavaScript tests, and 9 Python release-check tests.
+- Packaged rendering: 15 templates × 11 themes, supported layout/look configurations, three distinct Dagre connection geometries, Default/Custom/source precedence, malformed frontmatter and recovery.
+- Exports: 105 existing SVG/PNG/PDF operations plus six swimlane-spacing SVG fixtures, with decoding, palette/background and geometry checks. Representative horizontal Redux Color and vertical Mocha/PDF swimlane exports were visually inspected after the patch.
+- Native document APIs: open, Unicode edit, autosave, appearance undo/redo, save/reopen and independent documents. These do not establish keyboard or gallery interaction.
+- Offline policy: local scripts and a CSP-blocked fetch; no claim that the network interface was disabled. The suite also asserts resources load from the packaged app, not a SwiftPM build-directory fallback.
 
-- `unit.log`: 9 Swift and 8 JavaScript tests passed.
-- `build.log`: optimized build and source/packaged checks for 97 notices passed.
-- `smoke-r2/results.txt`: final `SUCCESS`, with exports and workspace captures.
-- `tested-inputs.json`: exact input-file and release executable hashes.
+An earlier macOS 26 run exposed a packaging-check assumption: SwiftPM 6.3.3 emits a flat resource bundle, while the local 6.4 build uses `Contents/Resources`. The checker now accepts exactly one valid layout. Explicit Bash pipe failure handling also prevents `tee` from hiding a failed build. A subsequent [baseline run passed](https://github.com/opendream/macmermaid/actions/runs/39130950507); only the matching current run establishes the final candidate's result.
 
-The preceding smoke attempt stopped at a foreground-focus assertion after its
-renderer/export checks. Commit 48c8706 removes that requirement from checks that
-address native document/editor APIs directly. A completely fresh run then passed.
-This change does not establish keyboard or accessibility behavior.
+## Regression results
 
-## Milestone audit
+Fit now scales the full diagram below 5% when necessary. Real WebKit checks cover a 100-node wide diagram in a 400×540 viewport, continuous zoom from Fit, and resizing. Pure geometry tests also cover extremely wide/tall diagrams and small or transiently empty viewports.
 
-| Issue | Result and remaining boundary |
+Swimlane fixtures include empty first/middle/last lanes, long English and Thai headings, LR/TB and Neo/Classic/Hand-drawn. They assert title containment, separate lane areas, exact visible node/edge/label counts, and removal of temporary layout-only bounds. Hand-drawn bounds allow intentional outline wobble at shared borders. All six cases passed locally on the patched renderer.
+
+A private 29-lane workflow was rechecked against the same renderer in commit 68c8037; subsequent changes only correct notice/provenance text. All 85 node IDs/texts, 29 lane IDs/texts, 106 connections and 67 edge labels match its Mermaid source. All headings fit their title areas and no lane bodies overlap. At 600×800, Fit places the full diagram between x=50 and x=550, at about 3.3% scale. Two renders took 11,244 ms and 11,407 ms. SVG/PNG/PDF exports succeeded. The original positioned SVG has a different layout and some conversion-level differences; preserving Mermaid source is not a claim of exact SVG equivalence. Private source, images and detailed audits remain local and must not enter release assets.
+
+## Remaining release blockers
+
+| Issue | Remaining work |
 | --- | --- |
-| [#8 Renderer](https://github.com/opendream/macmermaid/issues/8) | Fulfilled: pinned local 12.2.0, native defaults, centralized metadata, dependency audit, license checks, error recovery and export gating. |
-| [#9 Documents](https://github.com/opendream/macmermaid/issues/9) | Fulfilled: comment-preserving YAML edits, portable palettes, source-driven selection, undo/redo, autosave, save/reopen, independent documents and workspace preferences. Native lifecycle checks use direct APIs. |
-| [#10 Inspector](https://github.com/opendream/macmermaid/issues/10) | Implemented and automated configuration checks pass. Keep open for live light/dark and minimum-size operation, keyboard/accessibility checks, and interaction with the new collapsible theme/look selectors. |
-| [#11 Templates](https://github.com/opendream/macmermaid/issues/11) | All three new templates render/export, with highlighting and accurate labels. Keep open until all three gallery actions are exercised in the live app and shown to preserve the current document. Shared action code and generic document-isolation tests are not that complete interaction check. |
-| [#12 Validation](https://github.com/opendream/macmermaid/issues/12) | Automated matrix, lifecycle, exports, recovery and licenses pass; representative exports reviewed. Keep open for the outstanding live UI/keyboard/accessibility and gallery checks. |
-| [#13 Documentation](https://github.com/opendream/macmermaid/issues/13) | Updated defaults, portable settings, 15 templates, visual selectors, current native screenshot, build/distribution instructions and explicit validation limits. |
+| [#10 Inspector](https://github.com/opendream/macmermaid/issues/10) | Live light/dark, normal/minimum size, theme/look selection and collapse/expand, keyboard focus, accessibility labels and system-accent behavior. |
+| [#11 Templates](https://github.com/opendream/macmermaid/issues/11) | Select each new gallery template in the live app; confirm an independent rendered document and unchanged existing unsaved source. |
+| [#12 Validation](https://github.com/opendream/macmermaid/issues/12) | Complete live UI/gallery evidence and confirm final matching local/CI runs; keep unfinished criteria unchecked. |
+| [#13 Documentation](https://github.com/opendream/macmermaid/issues/13) | Final screenshots and validation record after live verification, then documentation/link review. |
 
-## Passing coverage
+Computer Use still reports `Sky Computer Use native pipe startup failed`. AppKit cached-view captures can omit the WebKit canvas or flatten materials, so they are not substituted for a live UI pass. The user is reconnecting Computer Use. Existing screenshots are historical until the current candidate is inspected.
 
-- `./scripts/test.sh`: 9 Swift and 8 JavaScript tests.
-- `./scripts/build.sh release`: optimized app and source/packaged license checks.
-- Packaged WebKit: 15 templates × 11 themes = 165 combinations, plus supported
-  layout/look configurations, three distinct Dagre connection geometries, source
-  precedence, Default removal, Custom state and malformed-frontmatter recovery.
-- 105 SVG/PNG/PDF export operations: every template in Redux Color and Mocha,
-  four fixed palettes, and recovery output. PNG decoding, PDF decoding/rasterization,
-  palette/background samples and geometry assertions supplement visual inspection.
-- Native document open, Unicode edit, autosave, appearance undo/redo, manual
-  frontmatter edits, save/reopen and two independent documents, through native APIs.
-- App/editor preference isolation and System/Light/Dark configuration assertions.
-- Local script URLs and a CSP-blocked fetch check the offline policy. The network
-  interface was not disabled. Six custom palettes render in standalone Mermaid
-  without MacMermaid helpers.
-- Syntax errors preserve the last valid preview and disable exports; rapid edits
-  recover to the latest source; empty source clears the preview.
+## Known limits and publication
 
-Fresh visual inspection covered both swimlane orientations, UML use cases,
-sequence and class diagrams, project-plan date spacing, and mind-map output,
-including PDF rasterizations. Labels and arrows in those samples were readable.
-The exact portable-appearance example in the usage guide also rendered in a
-separate headless WebKit check with the pinned bundle; its SVG and PNG were
-inspected. Relative documentation links and all six pages' GitHub-rendered HTML
-structure were checked. An interactive browser preview was unavailable.
-The light, normal-size workspace capture used in the README is an unedited native
-AppKit capture of the current build with a non-private sample diagram.
+- Large swimlane layout remains slow; the lane-spacing fix does not claim to solve performance.
+- Return arrows directly into swimlane decision diamonds can still detach upstream. Templates return to a review rectangle before the decision.
+- Explicit ELK layout fails for mind maps in this engine; the inspector retains their native layout. Swimlanes keep their dedicated layout.
+- YAML aliases/anchors/merge keys and legacy init directives require source edits. Unrelated typography variables survive Default and can leave Custom visible.
+- Some diagram-specific strokes retain upstream colors. Look cards are fixed sample illustrations, not thumbnails of the active diagram.
+- The release is Apple Silicon, ad hoc signed and unnotarized. No Intel or Developer ID/notarization pass is claimed.
 
-The suite produced 20 normal/minimum-size workspace captures, but some dark
-captures omit the WebKit canvas and flatten toolbar materials. These are not proof
-that the live dark/minimum-size interface passes, nor evidence by themselves of a
-runtime canvas defect. Final live inspection was not completed. Prior-build UI
-observations are not substituted for validation of the current selectors.
-
-## Known limitations
-
-- Mermaid 12 geometry is intentional; no v11 compatibility layer is present.
-- Large swimlanes can be slow. A separate 85-step, 106-connection, 29-lane case
-  took approximately 12–13 seconds; it preserved source content but produced two
-  malformed empty lanes and overlapping long role headings. That user document
-  and its private artifacts are not included in the release evidence.
-- A return arrow directly into a swimlane decision diamond can detach upstream.
-  The supplied templates return to a review rectangle before the decision.
-- Fit has a 5% minimum zoom, so a very wide diagram can remain clipped in a narrow
-  preview. SVG export retains the full diagram.
-- Explicit ELK layout fails for mind maps in this engine, so the inspector keeps
-  their native layout. Swimlanes also retain their dedicated layout.
-- YAML aliases, anchors, merge keys and legacy init directives require source edits;
-  the inspector explains this and leaves them intact. Unrelated typography variables
-  survive Default and can leave the theme displayed as Custom.
-- Some native diagram strokes retain upstream colors; palette variables do not
-  override every diagram-specific drawing rule.
-- Look cards are fixed native sample illustrations, not rendered thumbnails of
-  the current document. They demonstrate drawing style, independently of its palette.
-- Full live keyboard/accessibility, light/dark and minimum-window validation remains
-  open in the milestone, along with the three gallery-action checks.
-
-## Distribution
-
-`MacMermaid-v0.2.0-alpha-macos-arm64.zip` is an Apple Silicon build for macOS 26+.
-It is **ad hoc signed, not Developer ID signed or notarized**. macOS may block its
-first launch. No Intel binary, macOS 26 runtime pass, or notarization is claimed.
-The source build remains available through the documented build procedure.
+Follow [RELEASING.md](RELEASING.md). `scripts/release_readiness.py` rejects open or incomplete milestone work, missing live UI evidence, stale source/executable/CI provenance and mismatched draft assets. Publication remains blocked until every requirement has evidence. Do not close issues, replace the tag, or publish solely because automated tests pass.
