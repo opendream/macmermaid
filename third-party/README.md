@@ -4,7 +4,7 @@
 license sources, and the full notice-text hashes in `THIRD_PARTY_NOTICES.md`.
 It covers Mermaid **12.2.0**, YAML **2.9.1**, and the palette adaptations.
 
-The renderer and its source map match the exact npm 12.2.0 distribution. The
+The upstream renderer and source map used for the audit match the exact npm 12.2.0 distribution. The
 main map has 1,242 inputs. All 32 embedded parser chunks match the parser 2.0.1
 package; their nested maps were inspected too. These maps identify 72 external
 package/version pairs. `audit-v12.json` records those pairs, downloaded archives,
