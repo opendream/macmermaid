@@ -32,13 +32,22 @@ struct MermaidDocument: FileDocument {
 }
 
 enum DiagramKind {
+    static func name(forType type: String) -> String {
+        let names = ["flowchart-v2": "Flowchart", "flowchart-elk": "Flowchart", "flowchart": "Flowchart",
+                     "swimlane": "Swimlane", "usecase": "UML use case", "sequence": "Sequence",
+                     "classDiagram": "Class diagram", "class": "Class diagram", "stateDiagram": "State diagram",
+                     "state": "State diagram", "er": "Entity relationship", "gantt": "Gantt chart",
+                     "pie": "Pie chart", "mindmap": "Mind map", "timeline": "Timeline", "gitGraph": "Git graph",
+                     "journey": "User journey", "architecture": "Architecture", "block": "Block diagram"]
+        return names[type] ?? type.capitalized
+    }
     static func name(for source: String) -> String {
         var inFrontmatter = false
         for line in source.components(separatedBy: .newlines) {
             let line = line.trimmingCharacters(in: .whitespaces)
             if line == "---" { inFrontmatter.toggle(); continue }
             if inFrontmatter || line.isEmpty || line.hasPrefix("%%") { continue }
-            let names = ["flowchart": "Flowchart", "graph": "Flowchart", "sequenceDiagram": "Sequence",
+            let names = ["swimlane-beta": "Swimlane", "usecase-beta": "UML use case", "flowchart": "Flowchart", "graph": "Flowchart", "sequenceDiagram": "Sequence",
                          "classDiagram": "Class diagram", "stateDiagram": "State diagram", "erDiagram": "Entity relationship",
                          "gantt": "Gantt chart", "pie": "Pie chart", "mindmap": "Mind map", "timeline": "Timeline",
                          "gitGraph": "Git graph", "journey": "User journey", "architecture": "Architecture", "block": "Block diagram"]

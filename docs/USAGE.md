@@ -23,13 +23,16 @@ When the source has a syntax error, the last valid preview stays visible. Export
 
 **MacMermaid → Settings → Appearance** controls the app and source editor. **System** follows macOS; **Light** and **Dark** override it. The editor keeps its standard syntax colors in each appearance.
 
-The toolbar's appearance inspector contains a **Themes** grid for the diagram canvas and exports:
+App controls and selection highlights use your macOS accent color. Decorative icons use neutral SF Symbols, and the app icon has a silver-and-charcoal connected-node design. The diagram's theme remains a separate document choice.
+
+The toolbar's appearance inspector edits the current document. New documents use **Redux Color**, with **Neo** and **ELK** where the diagram type supports them. Swimlanes keep their dedicated layout, and mind maps retain their native layout. Mermaid 12's layout and appearance changes are intentional.
 
 | Theme | Palette |
 | --- | --- |
-| Studio | Default MacMermaid theme |
+| Redux Color | Mermaid 12's colorful default |
+| Studio | Soft green |
 | Ocean | Blue |
-| Mermaid | Mermaid's standard theme |
+| Mermaid | Mermaid's original standard theme |
 | Forest | Green |
 | Mono | Neutral |
 | Midnight | Dark |
@@ -38,11 +41,48 @@ The toolbar's appearance inspector contains a **Themes** grid for the diagram ca
 | Tokyo Day | Tokyo Night's Day palette |
 | Tokyo Night | Tokyo Night's Night palette |
 
-Latte, Mocha, Tokyo Day, and Tokyo Night use fixed palettes independently of app appearance. Diagram themes do not recolor the editor, toolbar, or inspector. Theme and workspace selections persist as app preferences; they are not embedded in `.mmd` files. Mermaid frontmatter and explicit styling in the source may override the inspector's defaults.
+Choose a color card in **Theme previews**. The section starts expanded and can be collapsed. Explicit theme choices are fixed independently of the app's light/dark appearance. They do not recolor the editor, toolbar, or inspector.
 
-New users start with Studio. Upgrading from the earlier Catppuccin Automatic option switches that selection to Studio; explicit saved theme selections are preserved.
+**Look** follows the theme section. Its collapsible **Look previews** show the same small sample illustration in each supported drawing style: Neo, Classic, and Hand-drawn. Select a card to apply that look; the highlighted card reflects the active style, including the default. The samples illustrate the style independently of your diagram's colors and layout. **Use default** clears an explicit theme or look choice.
 
-The inspector also offers three flowchart connection styles. These apply to flowcharts, not every Mermaid diagram type.
+**Layout** follows Look and offers ELK and Dagre for supported graph diagrams. **Connections** appears for flowcharts using Dagre, where Smooth, Straight, and Stepped change the actual paths. It is hidden for ELK and swimlanes.
+
+Mind maps keep their native layout because an explicit ELK override fails in the bundled 12.2.0 engine. Swimlanes also keep their dedicated layout. Their supported look choices remain available.
+
+**Default** removes the applicable explicit override and lets Mermaid choose. **Custom** means the source configuration does not match one of the presets. Manual frontmatter edits update the inspector. Node-level styles in your diagram can still override theme colors.
+
+### Portable appearance
+
+Inspector changes edit standard Mermaid YAML frontmatter in the `.mmd` file:
+
+```mermaid
+---
+config:
+  theme: redux-color
+  layout: dagre
+  look: classic
+  flowchart:
+    curve: stepAfter
+---
+flowchart LR
+    Draft --> Review --> Publish
+```
+
+Custom palettes use `theme: base` and explicit `themeVariables`, so a Mermaid 12.2.0 renderer outside MacMermaid can interpret the same file. Each open document keeps its own choices. Save, close, and reopen preserves them; **⌘Z** and **⇧⌘Z** undo and redo inspector changes together with source edits.
+
+Comments, unrelated configuration, and the diagram body are retained. Malformed YAML is shown as an error without being replaced. Configuration containing aliases, anchors, merge keys, or legacy init directives must be edited in the source before the inspector can safely change it. The inspector explains these cases.
+
+Default removes the controlled theme colors but preserves unrelated variables such as typography. If these still customize the theme, the menu continues to show Custom.
+
+Grid visibility, editor text size, wrapping, and app appearance remain local preferences. They do not add diagram configuration. Old global theme/connection preferences do not control v0.2 documents; appearance is now owned by the source.
+
+## Swimlanes and UML use cases
+
+**⇧⌘N** opens 15 starting templates. **Horizontal swimlanes** follows a customer request across teams from left to right. **Vertical swimlanes** follows a proposal through review and approval. Both use native `swimlane-beta` syntax and include a decision, a revision path, and handoffs between lanes.
+
+**UML use cases** uses `usecase-beta`, with actors, a library system boundary, and an include relationship. Selecting any template opens a new document and keeps your existing work.
+
+The swimlane templates return revisions to a review step before the decision. In this engine version, a return arrow directly into a decision diamond can detach from its target; inspect routing when adapting the examples.
 
 ## Export
 
@@ -50,7 +90,7 @@ Choose **File → Export Diagram** for SVG, PNG, or vector PDF. Use **⇧⌘C** 
 
 Exports include the full diagram regardless of the current zoom or pan, with an explicit background and without canvas dots. PNG exports use 2× resolution where possible, capped at 8192 pixels per side and 24 million pixels.
 
-Rendering is local and uses Mermaid 11.16.1. Remote images, clickable diagram links, and remotely loaded icon packs are disabled. The included templates are starting points; the engine supports additional Mermaid diagram types.
+Rendering is local and uses Mermaid 12.2.0. Remote images, clickable diagram links, and remotely loaded icon packs are disabled. The included templates are starting points; the engine supports additional Mermaid diagram types.
 
 ## Keyboard shortcuts
 

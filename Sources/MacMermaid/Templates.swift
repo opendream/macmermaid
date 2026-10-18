@@ -23,6 +23,71 @@ struct DiagramTemplate: Identifiable, Sendable {
 
     static let all: [DiagramTemplate] = [
         welcome,
+        .init(id: "swimlane-horizontal", title: "Horizontal swimlanes", subtitle: "Follow a request across teams, left to right.", symbol: "rectangle.split.3x1", source: """
+        swimlane-beta LR
+            subgraph Customer
+                request[Send request]
+                clarify[Clarify details]
+                receive([Receive delivery])
+            end
+            subgraph Support
+                review[Review request]
+                complete{Details complete?}
+                confirm[Confirm delivery]
+            end
+            subgraph Operations
+                prepare[Prepare order]
+                ship[Ship order]
+            end
+            request --> review
+            review --> complete
+            complete -->|No| clarify
+            clarify --> review
+            complete -->|Yes| prepare
+            prepare --> ship
+            ship --> confirm
+            confirm --> receive
+        """),
+        .init(id: "swimlane-vertical", title: "Vertical swimlanes", subtitle: "Trace a proposal from idea to approval.", symbol: "rectangle.split.1x3", source: """
+        swimlane-beta TB
+            subgraph Author
+                draft[Draft proposal]
+                revise[Revise proposal]
+                publish([Publish decision])
+            end
+            subgraph Reviewer
+                review[Read proposal]
+                assess{Ready to approve?}
+                feedback[Give feedback]
+            end
+            subgraph Lead
+                approve[Approve proposal]
+            end
+            draft --> review
+            review --> assess
+            assess -->|No| feedback
+            feedback --> revise
+            revise --> review
+            assess -->|Yes| approve
+            approve --> publish
+        """),
+        .init(id: "usecase", title: "UML use cases", subtitle: "Show who uses a system and what they can do.", symbol: "person.and.background.dotted", source: """
+        usecase-beta
+            direction LR
+            actor Member
+            actor Librarian
+            systemBoundary Library[Library service]
+                Search(Search catalogue)
+                Borrow(Borrow a book)
+                Check(Check availability)
+                Return(Return a book)
+            end
+            Member --> Search
+            Member --> Borrow
+            Member --> Return
+            Librarian --> Check
+            Borrow ..> : include Check
+        """),
         .init(id: "flowchart", title: "Flowchart", subtitle: "Decisions, steps, and possibilities.", symbol: "arrow.triangle.branch", source: """
         flowchart LR
             A([Start]) --> B[Gather ideas]
@@ -102,6 +167,8 @@ struct DiagramTemplate: Identifiable, Sendable {
         gantt
             title The next big thing
             dateFormat YYYY-MM-DD
+            axisFormat %b %d
+            tickInterval 1week
             section Discover
             Research :a, 2026-10-19, 4d
             Sketch   :b, after a, 3d

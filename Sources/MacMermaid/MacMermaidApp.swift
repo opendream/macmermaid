@@ -107,7 +107,7 @@ struct SettingsView: View {
                 Text("Editor text · \(Int(fontSize)) pt")
             }
             Toggle("Wrap long lines", isOn: $lineWrap)
-            LabeledContent("Rendering", value: "Mermaid 11.16.1 · Offline")
+            LabeledContent("Rendering", value: "Mermaid \(RendererMetadata.version) · Offline")
             Text("Your diagrams stay on your Mac. Saved documents use macOS autosave and version history.")
                 .font(.caption).foregroundStyle(.secondary)
         }

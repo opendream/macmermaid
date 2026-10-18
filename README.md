@@ -4,24 +4,32 @@ A native macOS editor for [Mermaid](https://mermaid.js.org/) diagrams, with live
 
 Write diagram source, see the result as you type, and export it as SVG, PNG, or PDF. MacMermaid combines a native text editor and document workflow with Liquid Glass controls.
 
-![MacMermaid editing a flowchart, with a live preview and Latte selected in the theme inspector.](docs/images/macmermaid.png)
+![MacMermaid editing a flowchart with a live preview and the collapsible theme palette selector.](docs/images/macmermaid.png)
 
-*Light app appearance with the Catppuccin Latte diagram theme.*
+*Light app appearance with the Mermaid 12 defaults.*
 
-**Status:** Early alpha. Build from source using the instructions below; prebuilt downloads are not available yet.
+**Status:** [v0.2.0-alpha prerelease](https://github.com/opendream/macmermaid/releases/tag/v0.2.0-alpha). This alpha includes known rendering limitations and incomplete interactive UI validation; see the [validation record](docs/VALIDATION-v0.2.0-alpha.md).
 
 ## Features
 
 - **Live preview** with syntax-error feedback and the last valid diagram kept visible while you edit.
 - **Native editing** with syntax highlighting, line numbers, find and replace, undo and redo, and line wrapping.
 - **Local documents** in `.mmd` and `.mermaid` formats, with autosave, recent files, multiple windows, and native window tabs.
-- **Templates and themes:** 12 starting templates and 10 diagram themes, including Catppuccin Latte/Mocha and Tokyo Day/Night.
+- **Templates and themes:** 15 starting templates and 11 diagram themes, including Redux Color, Catppuccin Latte/Mocha, and Tokyo Day/Night. Horizontal/vertical swimlanes and UML use cases are included.
+- **Document appearance:** portable theme, layout, look, and supported connection settings saved in Mermaid frontmatter.
+- **Visual selectors:** collapsible theme palettes and look samples, with controls and selections following your macOS accent color.
 - **Flexible exports:** SVG, PNG, and vector PDF, plus SVG copying to the clipboard.
 - **Offline rendering:** Mermaid is bundled with the app. Rendering needs no account, server, or CDN.
 
 ## Get started
 
-### Requirements
+### Download
+
+The [alpha release](https://github.com/opendream/macmermaid/releases/tag/v0.2.0-alpha) includes `MacMermaid-v0.2.0-alpha-macos-arm64.zip` for **Apple Silicon Macs running macOS 26 or later**, plus checksums and validation evidence. Extract the archive and move `MacMermaid.app` to Applications.
+
+This build is ad hoc signed, **not Developer ID signed or notarized**. macOS may block its first launch. Build from source if you prefer a local build; no Intel binary is provided in this alpha. Runtime validation was performed on macOS 27.0.1, not macOS 26.
+
+### Build requirements
 
 - macOS 26 or later.
 - Xcode 26 or later, with Swift 6.2 or later available to command-line builds.
@@ -47,15 +55,18 @@ For an optimized build, use `./scripts/build.sh release`. See the [development g
 3. Press **⌘S** to choose where to save. macOS handles subsequent autosaves.
 4. Choose **File → Export Diagram** to export an image, or press **⇧⌘C** to copy SVG.
 
-**MacMermaid → Settings → Appearance** controls the app and editor's light or dark appearance. The toolbar's appearance inspector selects the diagram theme independently.
+**MacMermaid → Settings → Appearance** controls the app and editor's light or dark appearance. The toolbar's appearance inspector saves diagram choices in the current document. New documents use Redux Color and Mermaid 12's native layout/look defaults; the app's light/dark appearance remains independent.
 
 See the [user guide](docs/USAGE.md) for shortcuts, canvas controls, themes, and export behavior. New to the syntax? Start with the [Mermaid documentation](https://mermaid.js.org/intro/).
 
 ## Current limitations
 
-- Rendering uses the bundled **Mermaid 11.16.1** engine; syntax support follows that version.
+- Rendering uses the bundled **Mermaid 12.2.0** engine; syntax support follows that version.
 - Remote images, clickable diagram links, and remotely loaded icon packs are disabled.
 - Exports are available only when the current source renders successfully.
+- Large swimlanes can be slow, produce malformed empty lanes, or overlap long lane headings. Return arrows directly into swimlane decision diamonds can detach; the supplied templates avoid that pattern.
+- Fit currently has a 5% minimum zoom, which can clip very wide diagrams in a narrow preview. SVG export retains the full diagram.
+- Look cards use fixed sample illustrations, not miniature renders of the current document.
 
 ## Help and contributions
 
