@@ -9,24 +9,29 @@ struct WorkspaceView: View {
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("editorFontSize") private var fontSize = 14.0
     @AppStorage("lineWrap") private var lineWrap = true
-    @AppStorage("diagramTheme") private var theme = DiagramTheme.studio.rawValue
     @AppStorage("showGrid") private var showGrid = true
-    @AppStorage("diagramCurve") private var curve = "basis"
+    @StateObject private var sourceEditor = SourceEditorController()
+    @State private var appearanceError: String?
+    @State private var isEditingAppearance = false
+    @State private var showThemePreviews = false
     @State private var showTemplates = false
-    @State private var showInspector = false
+    // The explicit smoke run starts with the real inspector visible for captures.
+    // Ordinary documents still start with it closed.
+    @State private var showInspector = SmokeTest.isRunning
     @State private var showEditor = true
     @State private var line = 1
     @State private var column = 1
     @State private var showErrorDetails = true
 
     private var options: RenderOptions {
-        RenderOptions(theme: theme, dark: colorScheme == .dark, grid: showGrid, curve: curve)
+        RenderOptions(grid: showGrid)
     }
 
     var body: some View {
         HStack(spacing: 0) {
             HSplitView {
-                if showEditor { editorPane.frame(minWidth: 290, idealWidth: 415, maxWidth: 640) }
+                editorPane.frame(minWidth: showEditor ? 290 : 0, idealWidth: showEditor ? 415 : 0, maxWidth: showEditor ? 640 : 0)
+                    .clipped().accessibilityHidden(!showEditor)
                 previewPane.frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity)
             }
             if showInspector {
@@ -43,7 +48,7 @@ struct WorkspaceView: View {
             Button("OK") { session.exportError = nil }
         } message: { Text(session.exportError ?? "") }
         .focusedSceneValue(\.workspace, WorkspaceActions(session: session, showTemplates: { showTemplates = true }, toggleEditor: { showEditor.toggle() }, toggleInspector: { showInspector.toggle() }))
-        .onAppear { DiagramTheme.migratePreference(in: .standard); render(); updateFilename() }
+        .onAppear { render(); updateFilename() }
         .onChange(of: document.text) { render() }
         .onChange(of: options) { render() }
         .onChange(of: fileURL) { updateFilename() }
@@ -67,7 +72,7 @@ struct WorkspaceView: View {
             }
             .padding(.horizontal, 18).frame(height: 46)
             Divider().opacity(0.5)
-            CodeEditor(text: $document.text, fontSize: fontSize, wraps: lineWrap, dark: colorScheme == .dark) { newLine, newColumn in
+            CodeEditor(text: $document.text, fontSize: fontSize, wraps: lineWrap, dark: colorScheme == .dark, controller: sourceEditor) { newLine, newColumn in
                 // NSTextView selection notifications can arrive during a SwiftUI update.
                 DispatchQueue.main.async { line = newLine; column = newColumn }
             }
@@ -97,7 +102,7 @@ struct WorkspaceView: View {
             }
             VStack(spacing: 0) {
                 HStack {
-                    Label(DiagramKind.name(for: document.text), systemImage: "square.stack.3d.up")
+                    Label(session.appearance.map { DiagramKind.name(forType: $0.diagramType) } ?? DiagramKind.name(for: document.text), systemImage: "square.stack.3d.up")
                         .font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
                     Spacer()
                     renderStatus
@@ -122,7 +127,7 @@ struct WorkspaceView: View {
             }
             .allowsHitTesting(true)
         }
-        .environment(\.colorScheme, options.isDark ? .dark : .light)
+        .environment(\.colorScheme, session.appearance?.isDark == true ? .dark : .light)
         .overlay {
             if session.isExporting {
                 ProgressView("Exporting…").padding(24).glassEffect(.regular, in: .rect(cornerRadius: 20))
@@ -149,7 +154,7 @@ struct WorkspaceView: View {
             Button { session.zoom(by: 1.2) } label: { Image(systemName: "plus").frame(width: 30, height: 30) }.help("Zoom in · ⌘+")
             Divider().frame(height: 16).padding(.horizontal, 5)
             Button { session.fit() } label: { Image(systemName: "arrow.up.left.and.arrow.down.right").frame(width: 30, height: 30) }.help("Fit diagram · ⌘0")
-        }.buttonStyle(.plain).padding(4).glassEffect(.regular, in: .capsule)
+        }.buttonStyle(.plain).foregroundStyle(.primary).padding(4).glassEffect(.regular, in: .capsule)
     }
 
     private func errorCard(_ error: String) -> some View {
@@ -198,18 +203,34 @@ struct WorkspaceView: View {
                     Button { showInspector = false } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .semibold)) }.buttonStyle(.plain).foregroundStyle(.secondary).help("Close appearance")
                 }
                 VStack(alignment: .leading, spacing: 12) {
-                    inspectorLabel("THEMES")
-                    themeGrid(DiagramTheme.allCases)
+                    inspectorLabel("DIAGRAM THEME")
+                    Picker("Theme", selection: appearanceBinding("theme")) {
+                        Text("Default · Redux Color").tag("default")
+                        ForEach(DiagramTheme.allCases) { Text($0.title).tag($0.rawValue) }
+                        if session.appearance?.theme == "custom" { Text("Custom").tag("custom") }
+                    }.labelsHidden().accessibilityLabel("Diagram theme")
+                    DisclosureGroup("Theme previews", isExpanded: $showThemePreviews) {
+                        themeGrid(DiagramTheme.allCases).padding(.top, 8)
+                    }.font(.system(size: 11))
+                }.disabled(!canEditAppearance)
+                if let appearance = session.appearance {
+                    if appearance.supportsLayout {
+                        appearancePicker("Layout", setting: "layout", choices: [("ELK", "elk"), ("Dagre", "dagre")], effective: appearance.effectiveLayout)
+                    }
+                    if !appearance.supportedLooks.isEmpty {
+                        appearancePicker("Look", setting: "look", choices: [("Neo", "neo"), ("Classic", "classic"), ("Hand-drawn", "handDrawn")].filter { appearance.supportedLooks.contains($0.1) }, effective: appearance.effectiveLook)
+                    }
+                    if appearance.supportsCurve {
+                        appearancePicker("Connections", setting: "curve", choices: [("Smooth", "basis"), ("Straight", "linear"), ("Stepped", "stepAfter")], effective: "")
+                    }
+                    if !appearance.editError.isEmpty {
+                        Text(appearance.editError).font(.system(size: 11)).foregroundStyle(.secondary)
+                    }
                 }
-                VStack(alignment: .leading, spacing: 12) {
-                    inspectorLabel("CONNECTIONS")
-                    Picker("Line style", selection: $curve) {
-                        Text("Smooth").tag("basis")
-                        Text("Straight").tag("linear")
-                        Text("Stepped").tag("stepAfter")
-                    }.labelsHidden().frame(maxWidth: .infinity)
-                    Text("Applies to flowchart connections.").font(.system(size: 10)).foregroundStyle(.tertiary)
+                if let appearanceError {
+                    Text(appearanceError).font(.system(size: 11)).foregroundStyle(.orange).textSelection(.enabled)
                 }
+                Text("Appearance choices are saved in this document.").font(.system(size: 10)).foregroundStyle(.secondary)
                 Divider()
                 VStack(alignment: .leading, spacing: 12) {
                     inspectorLabel("WORKSPACE")
@@ -224,16 +245,52 @@ struct WorkspaceView: View {
                 Spacer()
                 VStack(alignment: .leading, spacing: 6) {
                     Text("A space to think clearly.").font(.system(size: 11, weight: .medium, design: .rounded))
-                    Text("Mermaid 11.16.1 · Runs offline").font(.system(size: 9)).foregroundStyle(.tertiary)
+                    Text("Mermaid \(RendererMetadata.version) · Runs offline").font(.system(size: 9)).foregroundStyle(.tertiary)
                 }
             }.padding(20).frame(maxWidth: .infinity, alignment: .leading)
         }.background(.bar)
     }
 
+    private var canEditAppearance: Bool {
+        session.ready && !session.isRendering && session.error == nil && !isEditingAppearance && session.appearance?.editError.isEmpty == true
+    }
+    private func selectedAppearance(_ setting: String) -> String {
+        guard let a = session.appearance else { return "default" }
+        switch setting { case "theme": return a.theme; case "layout": return a.layout; case "look": return a.look; default: return a.curve }
+    }
+    private func appearanceBinding(_ setting: String) -> Binding<String> {
+        Binding(get: { selectedAppearance(setting) }, set: { changeAppearance(setting, to: $0) })
+    }
+    private func appearancePicker(_ title: String, setting: String, choices: [(String, String)], effective: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            inspectorLabel(title.uppercased())
+            Picker(title, selection: appearanceBinding(setting)) {
+                Text("Default").tag("default")
+                ForEach(choices, id: \.1) { Text($0.0).tag($0.1) }
+                if selectedAppearance(setting) == "custom" { Text("Custom").tag("custom") }
+            }.labelsHidden().accessibilityLabel(title)
+            if !effective.isEmpty { Text("Using \(effective)").font(.system(size: 10)).foregroundStyle(.secondary) }
+        }.disabled(!canEditAppearance)
+    }
+    private func changeAppearance(_ setting: String, to value: String) {
+        guard value != "custom", canEditAppearance else { return }
+        isEditingAppearance = true
+        appearanceError = nil
+        let original = document.text
+        Task { @MainActor in
+            defer { isEditingAppearance = false }
+            do {
+                let updated = try await session.sourceByChangingAppearance(setting, to: value, source: original)
+                guard document.text == original else { throw AppearanceEditError(message: "The source changed. Please select the appearance again.") }
+                try sourceEditor.replace(updated, expected: original, actionName: "Change Diagram \(setting.capitalized)")
+            } catch { appearanceError = error.localizedDescription }
+        }
+    }
+
     private func themeGrid(_ themes: [DiagramTheme]) -> some View {
         LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
             ForEach(themes) { option in
-                Button { theme = option.rawValue } label: {
+                Button { changeAppearance("theme", to: option.rawValue) } label: {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(spacing: 4) {
                             ForEach(0..<3) { index in
@@ -247,14 +304,14 @@ struct WorkspaceView: View {
                                 .lineLimit(2).frame(minHeight: 24, alignment: .topLeading)
                             Spacer(minLength: 0)
                             Image(systemName: "checkmark").font(.system(size: 9, weight: .bold))
-                                .foregroundStyle(accent).opacity(theme == option.rawValue ? 1 : 0)
+                                .foregroundStyle(accent).opacity(session.appearance?.theme == option.rawValue ? 1 : 0)
                         }
                     }.padding(10).frame(maxWidth: .infinity, alignment: .leading)
-                        .background(theme == option.rawValue ? accent.opacity(0.1) : Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
-                        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(theme == option.rawValue ? accent.opacity(0.6) : .clear))
+                        .background(session.appearance?.theme == option.rawValue ? accent.opacity(0.1) : Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
+                        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(session.appearance?.theme == option.rawValue ? accent.opacity(0.6) : .clear))
                 }.buttonStyle(.plain)
                     .accessibilityLabel(option.title)
-                    .accessibilityValue(theme == option.rawValue ? "Selected" : "Not selected")
+                    .accessibilityValue(session.appearance?.theme == option.rawValue ? "Selected" : "Not selected")
             }
         }
     }

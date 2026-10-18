@@ -23,4 +23,18 @@ final class DocumentTests: XCTestCase {
         XCTAssertEqual(keywords, ["flowchart", "TD"])
         XCTAssertTrue(tokens.allSatisfy { NSMaxRange($0.range) <= (text as NSString).length })
     }
+    func testNewTemplateNamesAndUnicodeHighlighting() {
+        XCTAssertEqual(DiagramTemplate.all.count, 15)
+        for (id, label, keyword) in [("swimlane-horizontal", "Swimlane", "swimlane-beta"),
+                                     ("swimlane-vertical", "Swimlane", "swimlane-beta"),
+                                     ("usecase", "UML use case", "usecase-beta")] {
+            let source = "%% สวัสดี 🌿\n" + DiagramTemplate.all.first { $0.id == id }!.source
+            XCTAssertEqual(DiagramKind.name(for: source), label)
+            let tokens = MermaidSyntax.tokens(in: source)
+            XCTAssertTrue(tokens.contains { $0.kind == .keyword && (source as NSString).substring(with: $0.range) == keyword })
+            XCTAssertTrue(tokens.allSatisfy { NSMaxRange($0.range) <= source.utf16.count })
+        }
+        XCTAssertEqual(DiagramKind.name(forType: "usecase"), "UML use case")
+        XCTAssertEqual(DiagramKind.name(forType: "swimlane"), "Swimlane")
+    }
 }

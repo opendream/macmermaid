@@ -4,11 +4,13 @@ import WebKit
 import UniformTypeIdentifiers
 
 enum DiagramTheme: String, CaseIterable, Identifiable {
+    case reduxColor = "redux-color"
     case studio, ocean, auto, forest, neutral, dark, latte, mocha
     case tokyoDay = "tokyo-day", tokyoNight = "tokyo-night"
     var id: String { rawValue }
     var title: String {
         switch self {
+        case .reduxColor: "Redux Color"
         case .latte: "Latte"
         case .mocha: "Mocha"
         case .tokyoDay: "Tokyo Day"
@@ -23,6 +25,7 @@ enum DiagramTheme: String, CaseIterable, Identifiable {
     }
     var colors: [Color] {
         switch self {
+        case .reduxColor: [.init(red: 0.88, green: 0.74, blue: 0.96), .init(red: 0.72, green: 0.84, blue: 0.98), .white]
         case .latte: DiagramPalette.latte.swatches
         case .mocha: DiagramPalette.mocha.swatches
         case .tokyoDay: DiagramPalette.tokyoDay.swatches
@@ -33,19 +36,6 @@ enum DiagramTheme: String, CaseIterable, Identifiable {
         case .forest: [.green.opacity(0.6), .yellow.opacity(0.3), .white]
         case .neutral: [.gray, .gray.opacity(0.3), .white]
         case .dark: [.init(white: 0.2), .purple.opacity(0.5), .gray]
-        }
-    }
-
-    // Keep the original raw values, including "auto" (Mermaid), for existing preferences.
-    static func preference(_ value: String?) -> DiagramTheme {
-        value.flatMap(Self.init(rawValue:)) ?? .studio
-    }
-
-    static func migratePreference(in defaults: UserDefaults) {
-        // The removed Automatic option used "system". Preserve every explicit choice,
-        // especially the older "auto" value, which still means Mermaid.
-        if defaults.string(forKey: "diagramTheme") == "system" {
-            defaults.set(Self.studio.rawValue, forKey: "diagramTheme")
         }
     }
 
@@ -60,18 +50,27 @@ enum ExportFormat: String, CaseIterable, Identifiable {
 }
 
 struct RenderOptions: Equatable {
-    var theme: String = "studio"
-    var dark = false
     var grid = true
-    var curve = "basis"
-    var resolvedTheme: DiagramTheme { DiagramTheme.preference(theme) }
-    var palette: DiagramPalette? { resolvedTheme.palette }
-    var isDark: Bool { palette?.isDark ?? (dark || resolvedTheme == .dark) }
-    var dictionary: [String: Any] {
-        var value: [String: Any] = ["theme": resolvedTheme.rawValue, "dark": isDark, "grid": grid, "curve": curve]
-        if let palette { value["palette"] = palette.colors }
-        return value
+    static var palettes: [String: [String: String]] {
+        Dictionary(uniqueKeysWithValues: DiagramPalette.allCases.map { ($0.rawValue, $0.colors) })
     }
+    var dictionary: [String: Any] { ["grid": grid, "palettes": Self.palettes] }
+}
+
+struct DiagramAppearance: Decodable, Equatable {
+    var diagramType: String
+    var theme: String
+    var layout: String
+    var look: String
+    var curve: String
+    var effectiveTheme: String
+    var effectiveLook: String
+    var effectiveLayout: String
+    var isDark: Bool
+    var supportsLayout: Bool
+    var supportedLooks: [String]
+    var supportsCurve: Bool
+    var editError: String
 }
 
 @MainActor
@@ -86,6 +85,7 @@ final class PreviewSession: NSObject, ObservableObject, WKScriptMessageHandler, 
     @Published var svg: String?
     @Published var size = CGSize.zero
     @Published var toast: String?
+    @Published var appearance: DiagramAppearance?
     var filename = "Diagram"
     private(set) var webView: WKWebView!
     private var source = ""
@@ -146,13 +146,16 @@ final class PreviewSession: NSObject, ObservableObject, WKScriptMessageHandler, 
         guard data["revision"] as? Int == revision else { return }
         switch type {
         case "rendered":
+            if let value = data["appearance"], let json = try? JSONSerialization.data(withJSONObject: value) {
+                appearance = try? JSONDecoder().decode(DiagramAppearance.self, from: json)
+            }
             svg = data["svg"] as? String
             size = CGSize(width: data["width"] as? Double ?? 0, height: data["height"] as? Double ?? 0)
             milliseconds = data["milliseconds"] as? Int ?? 0
             error = nil
             isRendering = false
         case "empty":
-            svg = nil; error = nil; size = .zero; isRendering = false
+            svg = nil; appearance = nil; error = nil; size = .zero; isRendering = false
         case "error":
             error = data["message"] as? String ?? "This diagram has a syntax error."
             isRendering = false
@@ -184,6 +187,19 @@ final class PreviewSession: NSObject, ObservableObject, WKScriptMessageHandler, 
     func fit() { webView.evaluateJavaScript("window.macmermaid?.fit()", completionHandler: nil) }
     func zoom(by factor: Double) {
         webView.callAsyncJavaScript("window.macmermaid?.zoom(factor)", arguments: ["factor": factor], in: nil, in: .page, completionHandler: nil)
+    }
+
+    func sourceByChangingAppearance(_ setting: String, to value: String, source: String) async throws -> String {
+        guard source == self.source, ready, !isRendering, error == nil, let appearance, appearance.editError.isEmpty else {
+            throw AppearanceEditError(message: appearance?.editError.isEmpty == false ? appearance!.editError : "Wait for a valid preview before changing appearance.")
+        }
+        guard let result = try await webView.callAsyncJavaScript(
+            "return window.macmermaid.editAppearance(source, diagramType, setting, value, palettes)",
+            arguments: ["source": source, "diagramType": appearance.diagramType, "setting": setting,
+                        "value": value, "palettes": RenderOptions.palettes], in: nil, contentWorld: .page) as? String else {
+            throw AppearanceEditError(message: "The document appearance could not be changed.")
+        }
+        return result
     }
 
     func exportedSVG() async throws -> String {
@@ -291,4 +307,9 @@ private final class PDFExporter: NSObject, WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         continuation?.resume(throwing: error); continuation = nil
     }
+}
+
+struct AppearanceEditError: LocalizedError {
+    let message: String
+    var errorDescription: String? { message }
 }

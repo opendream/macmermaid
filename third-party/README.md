@@ -1,48 +1,60 @@
 # Third-party license inventory
 
-`manifest.json` records the artifact, source-map hashes, component versions,
-license sources, and notice-text hashes used for `THIRD_PARTY_NOTICES.md`.
-It covers the Mermaid 11.16.1 distribution plus Catppuccin and Tokyo Night palettes.
+`manifest.json` records artifact and source-map hashes, component versions,
+license sources, and the full notice-text hashes in `THIRD_PARTY_NOTICES.md`.
+It covers Mermaid **12.2.0**, YAML **2.9.1**, and the palette adaptations.
 
-The renderer was compared byte-for-byte with `mermaid@11.16.1/dist/mermaid.min.js`
-from the local npm cache. Its matching source map contains 1,125 source inputs.
-The embedded `@mermaid-js/parser@1.2.0` chunks were each compared with the matching
-cached files before inspecting their nested maps. The two map levels identify
-70 external package/version pairs. Additional entries cover Mermaid and its parser,
-prebundled Rough.js dependencies, Venn.js's fmin routines, vscode-uri's embedded
-code and webpack helpers, KaTeX adaptations, Cytoscape utilities, JamaJS SVD code,
-and the two palette families. This produces 86 notice entries.
+The renderer and its source map match the exact npm 12.2.0 distribution. The
+main map has 1,242 inputs. All 32 embedded parser chunks match the parser 2.0.1
+package; their nested maps were inspected too. These maps identify 72 external
+package/version pairs. `audit-v12.json` records those pairs, downloaded archives,
+checksums, and the separate ELK investigation. The complete inventory has 97
+notice entries, including adaptations and prebundled components.
 
-This inventory is intentionally inclusive: a source-map input may be eliminated
-by bundling. The source paths are stronger version evidence than current installed
-dependencies or Mermaid's semver ranges, which can resolve to different versions.
-Licenses were copied from matching cached npm packages or identified upstream
-sources. For Iconify utils, chevrotain-allstar, and ts-dedent, the license source
-is a separate upstream snapshot rather than a claim that it is the exact bundled
-source version. The full text and its checksum are retained. For embedded code
-whose version is not exposed, no exact version is asserted.
+ELK includes Java-derived runtime code, a worker shim, and a Browserify prelude.
+Its release build file identifies the GWT, Guava, EMF, Xtend, and Xbase versions.
+Their source archives and applicable notices are included conservatively. This
+build-file evidence is distinguished from a recovered nested source map; exact
+versions are not invented for embedded code that does not expose one. The EPL
+entries link to source archives and upstream build instructions.
 
-DOMPurify's Apache-2.0 alternative is selected; the original dual-license document
-is kept intact. Chevrotain's NOTICE is included. The inspected Tokyo Night,
-DOMPurify, and JamaJS repository trees contain no separate NOTICE file. KaTeX's
-source attribution for font-derived SVG geometry is retained with the OFL-1.1
-text. This change does not add fonts or modify the renderer JavaScript.
+The source-map inventory is intentionally inclusive: bundling may eliminate an
+input. Versions in source paths are stronger evidence than semver dependency
+ranges. Unchanged components retain the previous audit's license evidence,
+including any explicit limitations about later upstream license snapshots.
+DOMPurify uses its Apache-2.0 option. Chevrotain NOTICE and Microsoft third-party
+notices are retained. KaTeX's font-derived SVG geometry carries OFL-1.1 notices.
+The Mermaid distribution is unmodified.
 
-## Updating the renderer or palettes
+## Rebuilding the YAML bundle
 
-1. Obtain the intended distribution and its matching source maps. Keep the
-   renderer and map hashes, and inspect nested bundles rather than assuming the
-   top-level package license covers them.
-2. Identify package versions from source paths, then collect each applicable
-   license, copyright notice, modification notice, and upstream NOTICE file.
-   Include adapted or prebundled code and document any version uncertainty.
-3. Update the full texts in `THIRD_PARTY_NOTICES.md`, the palette license files,
-   and the component entries and hashes in `manifest.json`. Preserve upstream
-   license comments in the JavaScript.
-4. Run `python3 scripts/check-licenses.py` and `./scripts/build.sh`. Verify a
-   release build with `python3 scripts/check-licenses.py --app build/MacMermaid.app`.
+The app builds and runs without npm or network access. Only regenerating the
+checked-in YAML browser bundle requires these development tools:
 
-The checker detects an unreviewed renderer replacement, missing or altered notice
-texts, and missing packaged files. It checks consistency; it does not decide the
-license of newly introduced code. No npm cache or network access is required to
-build the app or run the checker.
+```sh
+npm --prefix scripts/web ci --ignore-scripts
+npm --prefix scripts/web run build
+node --test Tests/Web/*.test.cjs
+```
+
+The lockfile pins YAML and esbuild. `Resources/Web/renderer.json` is the version
+metadata consumed by Settings, the inspector, and build checks. A regenerated
+bundle must match its audited checksum, or receive a new audit before packaging.
+
+## Updating bundled dependencies
+
+1. Obtain the exact distribution and its matching source maps. Compare embedded
+   parser chunks with the matching package before inspecting their nested maps.
+2. Inventory versions from source paths. Inspect prebundled inputs for additional
+   dependencies, adaptations, copyright notices, and upstream NOTICE files.
+3. Collect applicable full license texts and source availability references.
+   Record uncertain embedded versions honestly. Preserve upstream comments.
+4. Update `THIRD_PARTY_NOTICES.md`, license resources, `manifest.json`,
+   `audit-v12.json`, and the central `Resources/Web/renderer.json` metadata.
+5. Run `python3 scripts/check-licenses.py`, `./scripts/test.sh`, and
+   `./scripts/build.sh`. Check the packaged resources with
+   `python3 scripts/check-licenses.py --app build/MacMermaid.app`.
+
+The checker verifies checksums, source-map package coverage, metadata consistency,
+and packaged files. It cannot determine the license of newly introduced code;
+that requires the source review above. No npm cache is needed for these checks.

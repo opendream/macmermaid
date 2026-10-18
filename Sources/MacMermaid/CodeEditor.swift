@@ -5,8 +5,8 @@ enum MermaidSyntax {
     enum Kind { case keyword, string, comment, arrow, number }
     struct Token { let range: NSRange; let kind: Kind }
     private static let rules: [(NSRegularExpression, Kind)] = [
-        (#"\b(flowchart|graph|sequenceDiagram|classDiagram|stateDiagram(?:-v2)?|erDiagram|gantt|pie|mindmap|timeline|gitGraph|journey|subgraph|end|participant|actor|autonumber|activate|deactivate|loop|alt|else|opt|par|and|rect|Note|note|over|section|title|dateFormat|classDef|class|style|linkStyle|direction|click|TD|TB|LR|RL|BT)\b"#, Kind.keyword),
-        (#"(?:--+>|==+>|-\.->|-->>|->>|--|\|[^|\n]+\|)"#, Kind.arrow),
+        (#"\b(swimlane-beta|usecase-beta|systemBoundary|include|extend|flowchart|graph|sequenceDiagram|classDiagram|stateDiagram(?:-v2)?|erDiagram|gantt|pie|mindmap|timeline|gitGraph|journey|subgraph|end|participant|actor|autonumber|activate|deactivate|loop|alt|else|opt|par|and|rect|Note|note|over|section|title|dateFormat|classDef|class|style|linkStyle|direction|click|TD|TB|LR|RL|BT)\b"#, Kind.keyword),
+        (#"(?:\.\.>|--+>|==+>|-\.->|-->>|->>|--|\|[^|\n]+\|)"#, Kind.arrow),
         (#"\b\d+(?:\.\d+)?\b"#, Kind.number),
         (#"\"[^\"\n]*\""#, Kind.string),
         (#"%%[^\n]*"#, Kind.comment)
@@ -19,11 +19,31 @@ enum MermaidSyntax {
     }
 }
 
+@MainActor
+final class SourceEditorController: ObservableObject {
+    weak var editor: NSTextView?
+
+    func replace(_ source: String, expected: String, actionName: String) throws {
+        guard let editor, editor.string == expected else {
+            throw AppearanceEditError(message: "The source changed while updating appearance. Please try again.")
+        }
+        guard source != expected else { return }
+        let selection = editor.selectedRange()
+        let length = (source as NSString).length
+        editor.breakUndoCoalescing()
+        editor.insertText(source, replacementRange: NSRange(location: 0, length: (expected as NSString).length))
+        editor.breakUndoCoalescing()
+        editor.undoManager?.setActionName(actionName)
+        editor.setSelectedRange(NSRange(location: min(length, max(0, selection.location + length - (expected as NSString).length)), length: 0))
+    }
+}
+
 struct CodeEditor: NSViewRepresentable {
     @Binding var text: String
     var fontSize: Double
     var wraps: Bool
     var dark: Bool
+    var controller: SourceEditorController
     var selectionChanged: (Int, Int) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -63,6 +83,7 @@ struct CodeEditor: NSViewRepresentable {
         scroll.verticalRulerView = LineNumberRuler(editor: editor, scrollView: scroll)
         scroll.rulersVisible = true
         context.coordinator.editor = editor
+        controller.editor = editor
         editor.string = text
         configure(editor, scroll: scroll)
         context.coordinator.highlight()

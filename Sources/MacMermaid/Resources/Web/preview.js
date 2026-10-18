@@ -7,6 +7,7 @@
   let pending = null, running = false, newest = 0, serial = 0;
   let width = 0, height = 0, scale = 1, x = 0, y = 0, fitting = true, dark = false;
   let currentSVG = null;
+  let lastDiagnostics = null;
   let currentBackground = '#eff1f5';
 
   function transform() {
@@ -30,56 +31,10 @@
     fitting = false;
     transform();
   }
-  function config(options) {
-    const isDark = options.dark;
-    let theme = options.theme;
-    let themeVariables = {fontFamily: '-apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif', fontSize: '15px'};
-    if (options.palette) {
-      const p = options.palette;
-      theme = 'base';
-      themeVariables = {...themeVariables, darkMode: isDark,
-        background: p.base, primaryColor: p.surface0, primaryTextColor: p.text,
-        primaryBorderColor: p.mauve, lineColor: p.subtext1, textColor: p.text,
-        secondaryColor: p.mantle, secondaryTextColor: p.text, secondaryBorderColor: p.blue,
-        tertiaryColor: p.surface1, tertiaryTextColor: p.text, tertiaryBorderColor: p.teal,
-        edgeLabelBackground: p.base, clusterBkg: p.mantle, clusterBorder: p.surface2,
-        titleColor: p.text, nodeTextColor: p.text,
-        actorBkg: p.surface0, actorBorder: p.mauve, actorTextColor: p.text,
-        actorLineColor: p.subtext1, signalColor: p.subtext1, signalTextColor: p.text,
-        labelBoxBkgColor: p.mantle, labelBoxBorderColor: p.mauve, labelTextColor: p.text,
-        loopTextColor: p.text, noteBkgColor: p.surface0, noteBorderColor: p.yellow, noteTextColor: p.text,
-        activationBkgColor: p.surface1, activationBorderColor: p.mauve,
-        pieTitleTextColor: p.text, pieSectionTextColor: p.base, pieLegendTextColor: p.text,
-        pieStrokeColor: p.base, pieOuterStrokeColor: p.surface2,
-        cScaleLabel0: p.text, cScaleLabel1: p.text, cScaleLabel2: p.text
-      };
-      [p.mauve, p.blue, p.teal, p.green, p.peach, p.yellow, p.pink, p.red, p.lavender, p.rosewater, p.subtext0, p.overlay1]
-        .forEach((color, index) => { themeVariables[`pie${index + 1}`] = color; });
-    } else if (theme === 'studio' || theme === 'ocean') {
-      const ocean = theme === 'ocean';
-      theme = 'base';
-      themeVariables = {...themeVariables, darkMode: isDark,
-        background: isDark ? '#172024' : '#f7f9fa',
-        primaryColor: isDark ? (ocean ? '#253c55' : '#24473f') : (ocean ? '#e2ecfb' : '#e4f3ee'),
-        primaryTextColor: isDark ? '#e8f3f1' : '#203f3a',
-        primaryBorderColor: ocean ? '#6b92c3' : '#74aa9c',
-        lineColor: isDark ? '#8da8af' : '#8a9e9d',
-        secondaryColor: isDark ? '#35434b' : '#eef1f5',
-        tertiaryColor: isDark ? '#3b3b4e' : '#f1ecfa',
-        secondaryTextColor: isDark ? '#edf3f4' : '#263e42',
-        tertiaryTextColor: isDark ? '#edf3f4' : '#263e42',
-        edgeLabelBackground: isDark ? '#172024' : '#f7f9fa',
-        clusterBkg: isDark ? '#203036' : '#edf4f3',
-        clusterBorder: isDark ? '#506b71' : '#c1d6d1'
-      };
-    } else if (theme === 'auto') {
-      theme = isDark ? 'dark' : 'default';
-    }
+  function config() {
     return {startOnLoad: false, securityLevel: 'strict', suppressErrorRendering: true,
-      maxTextSize: 200000, maxEdges: 1500, theme, themeVariables,
-      fontFamily: themeVariables.fontFamily, htmlLabels: false,
-      flowchart: {htmlLabels: false, useMaxWidth: false, curve: options.curve, padding: 18, nodeSpacing: 38, rankSpacing: 48},
-      sequence: {useMaxWidth: false}, gantt: {useMaxWidth: false},
+      maxTextSize: 200000, maxEdges: 1500, theme: 'redux-color',
+      fontFamily: '-apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif',
       secure: ['secure', 'securityLevel', 'startOnLoad', 'maxTextSize', 'maxEdges', 'suppressErrorRendering']};
   }
   async function drain() {
@@ -90,11 +45,6 @@
         const request = pending;
         pending = null;
         const {source, options, revision} = request;
-        dark = options.dark;
-        const background = options.palette?.base || (dark ? '#172024' : '#f7f9fa');
-        document.documentElement.style.setProperty('--canvas', background);
-        document.documentElement.style.setProperty('--dot', options.palette?.surface0 || (dark ? '#344348' : '#cdd6d8'));
-        document.documentElement.classList.toggle('dark', dark);
         viewport.classList.toggle('grid', options.grid);
         if (!source.trim()) {
           stage.replaceChildren(); currentSVG = null; width = height = 0;
@@ -102,9 +52,25 @@
         }
         const start = performance.now();
         try {
-          mermaid.initialize(config(options));
+          MacMermaidAppearance.read(source);
+          mermaid.initialize(config());
+          const parsed = await mermaid.parse(source);
+          const sourceConfig = structuredClone(parsed.config);
           const result = await mermaid.render(`diagram_${++serial}`, source, scratch);
           if (revision !== newest) continue;
+          const appearance = MacMermaidAppearance.inspect(source, result.diagramType, sourceConfig,
+            mermaid.mermaidAPI.defaultConfig, options.palettes);
+          const vars = sourceConfig.themeVariables || {};
+          const selected = MacMermaidAppearance.preset(appearance.theme, options.palettes);
+          const background = vars.background || selected.themeVariables.background ||
+            (['dark', 'redux-dark', 'redux-dark-color'].includes(appearance.effectiveTheme) ? '#1f2020' : '#ffffff');
+          dark = vars.darkMode === true || ['mocha', 'tokyo-night', 'dark'].includes(appearance.theme) ||
+            ['dark', 'redux-dark', 'redux-dark-color'].includes(appearance.effectiveTheme);
+          appearance.isDark = dark;
+          lastDiagnostics = {appearance, config: sourceConfig};
+          document.documentElement.style.setProperty('--canvas', background);
+          document.documentElement.style.setProperty('--dot', dark ? '#4a4e59' : '#d7dce0');
+          document.documentElement.classList.toggle('dark', dark);
           const dom = new DOMParser().parseFromString(result.svg, 'image/svg+xml');
           const svg = dom.documentElement;
           const box = (svg.getAttribute('viewBox') || '').split(/[ ,]+/).map(Number);
@@ -117,7 +83,7 @@
           currentBackground = background;
           stage.innerHTML = currentSVG;
           if (fitting || serial === 1) fit(); else transform();
-          post({type: 'rendered', revision, svg: currentSVG, width, height, milliseconds: Math.round(performance.now() - start)});
+          post({type: 'rendered', revision, appearance, svg: currentSVG, width, height, milliseconds: Math.round(performance.now() - start)});
         } catch (error) {
           if (revision !== newest) continue;
           const message = String(error?.message || error).replace(/<[^>]*>/g, '').slice(0, 2500);
@@ -155,6 +121,10 @@
   window.macmermaid = {
     request(value) { newest = value.revision; pending = value; drain(); },
     fit, zoom, exportSVG, png,
+    diagnostics() { return lastDiagnostics; },
+    editAppearance(source, diagramType, setting, value, palettes) {
+      return MacMermaidAppearance.update(source, diagramType, setting, value, palettes);
+    },
     setGrid(value) { viewport.classList.toggle('grid', value); }
   };
   let drag = null;

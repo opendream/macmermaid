@@ -19,6 +19,15 @@ def check(app=None):
     renderer = manifest["bundle"]
     if sha256((ROOT / renderer["path"]).read_bytes()) != renderer["sha256"]:
         raise ValueError("Renderer changed: audit its dependencies and refresh third-party notices before packaging.")
+    web_root = ROOT / "Sources/MacMermaid/Resources/Web"
+    metadata = json.loads((web_root / "renderer.json").read_text())
+    if (metadata["version"], metadata["sha256"]) != (renderer["version"], renderer["sha256"]):
+        raise ValueError("Displayed renderer metadata differs from the audited bundle.")
+    for bundle in manifest.get("additionalBundles", []):
+        if sha256((ROOT / bundle["path"]).read_bytes()) != bundle["sha256"]:
+            raise ValueError(f"Additional bundle changed: {bundle['path']}")
+        if bundle["path"].endswith("/yaml.min.js") and bundle["version"] != metadata["yamlVersion"]:
+            raise ValueError("YAML version metadata differs from the audited bundle.")
     notices = (ROOT / manifest["notices"]["path"]).read_bytes()
     if sha256(notices) != manifest["notices"]["sha256"]:
         raise ValueError("Third-party notices differ from the audited manifest.")
@@ -35,13 +44,18 @@ def check(app=None):
         license_text = section.split("```text\n", 1)[1].split("```", 1)[0]
         if sha256(license_text.encode()) != component["licenseTextSHA256"]:
             raise ValueError(f"License text changed: {component['id']}")
+    audit = json.loads((ROOT / "third-party/audit-v12.json").read_text())
+    covered = {(c["name"], c["version"]) for c in manifest["components"]}
+    for name, version in audit["sourceMapPackageVersions"]:
+        if (name, version) not in covered:
+            raise ValueError(f"Missing source-map package notice: {name}@{version}")
     if app:
         resources = app / "Contents/Resources"
-        for name in ["LICENSE", "THIRD_PARTY_NOTICES.md", "third-party/manifest.json"]:
+        for name in ["LICENSE", "THIRD_PARTY_NOTICES.md", "third-party/manifest.json", "third-party/audit-v12.json"]:
             if (resources / name).read_bytes() != (ROOT / name).read_bytes():
                 raise ValueError(f"Packaged notice differs: {name}")
         web = resources / "MacMermaid_MacMermaid.bundle/Contents/Resources/Web"
-        for name in ["mermaid.min.js", "MERMAID-LICENSE.txt", "CATPPUCCIN-LICENSE.txt", "TOKYO-NIGHT-LICENSE.txt"]:
+        for name in ["mermaid.min.js", "yaml.min.js", "renderer.json", "palettes.json", "YAML-LICENSE", "MERMAID-LICENSE.txt", "CATPPUCCIN-LICENSE.txt", "TOKYO-NIGHT-LICENSE.txt"]:
             if (web / name).read_bytes() != (ROOT / "Sources/MacMermaid/Resources/Web" / name).read_bytes():
                 raise ValueError(f"Packaged renderer resource differs: {name}")
     print(f"License checks passed: {len(seen)} component notices" + (" and packaged resources." if app else "."))
