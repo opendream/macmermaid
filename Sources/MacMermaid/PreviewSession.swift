@@ -103,7 +103,7 @@ final class PreviewSession: NSObject, ObservableObject, WKScriptMessageHandler, 
         webView.navigationDelegate = self
         webView.setValue(false, forKey: "drawsBackground")
         webView.allowsMagnification = false
-        if let url = Bundle.module.url(forResource: "index", withExtension: "html", subdirectory: "Web") {
+        if let url = AppResources.bundle.url(forResource: "index", withExtension: "html", subdirectory: "Web") {
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         } else {
             error = "The bundled renderer is missing. Rebuild MacMermaid with its Web resources."

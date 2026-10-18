@@ -14,7 +14,7 @@ enum DiagramPalette: String, CaseIterable {
 
     var isDark: Bool { self == .mocha || self == .tokyoNight }
     private static let tokens: [String: [String: String]] = {
-        let url = Bundle.module.url(forResource: "palettes", withExtension: "json", subdirectory: "Web")!
+        let url = AppResources.bundle.url(forResource: "palettes", withExtension: "json", subdirectory: "Web")!
         return try! JSONDecoder().decode([String: [String: String]].self, from: Data(contentsOf: url))
     }()
     var colors: [String: String] { Self.tokens[rawValue]! }

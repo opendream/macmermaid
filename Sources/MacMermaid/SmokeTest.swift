@@ -439,7 +439,7 @@ enum SmokeTest {
 
     private static func checkIsolationAndPortability(session: PreviewSession, folder: URL) async throws {
         let appPath = Bundle.main.bundleURL.resolvingSymlinksInPath().path + "/"
-        let resourcePath = Bundle.module.bundleURL.resolvingSymlinksInPath().path
+        let resourcePath = AppResources.bundle.bundleURL.resolvingSymlinksInPath().path
         guard resourcePath.hasPrefix(appPath) else {
             throw Failure("Packaged app loaded build-tree resources instead of its own bundle: \(resourcePath)")
         }
@@ -461,7 +461,7 @@ enum SmokeTest {
         // YAML editor, or MacMermaid initialization defaults can affect this result.
         let directory = folder.appendingPathComponent("standalone", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        guard let bundle = Bundle.module.url(forResource: "mermaid.min", withExtension: "js", subdirectory: "Web") else {
+        guard let bundle = AppResources.bundle.url(forResource: "mermaid.min", withExtension: "js", subdirectory: "Web") else {
             throw Failure("Missing Mermaid bundle")
         }
         try Data(contentsOf: bundle).write(to: directory.appendingPathComponent("mermaid.min.js"))
